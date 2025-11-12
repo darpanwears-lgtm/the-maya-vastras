@@ -195,8 +195,8 @@ export default function ProductDetails({ product }: { product: Product }) {
               </div>
             </div>
           </div>
-        </main>
-      </div>
+        </div>
+      </main>
       <Toaster />
     </>
   );
