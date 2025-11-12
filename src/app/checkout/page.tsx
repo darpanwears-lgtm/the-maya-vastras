@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -15,8 +14,15 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { ShoppingBag } from 'lucide-react';
+import { Loader2, ShoppingBag } from 'lucide-react';
 import Header from '@/components/header';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { useUser, useFirebase, useDoc, useMemoFirebase } from '@/firebase';
+import { useEffect, useState, useTransition } from 'react';
+import { Product, Order } from '@/lib/types';
+import { doc, collection, serverTimestamp } from 'firebase/firestore';
+import { addDocumentNonBlocking } from '@/firebase/non-blocking-updates';
+import { useToast } from '@/hooks/use-toast';
 
 const checkoutFormSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address.' }),
@@ -33,6 +39,24 @@ const checkoutFormSchema = z.object({
 type CheckoutFormValues = z.infer<typeof checkoutFormSchema>;
 
 export default function CheckoutPage() {
+  const { toast } = useToast();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const { user, isUserLoading } = useUser();
+  const { firestore } = useFirebase();
+  const [isPending, startTransition] = useTransition();
+
+  const productId = searchParams.get('productId');
+  const color = searchParams.get('color');
+  const size = searchParams.get('size');
+
+  const productRef = useMemoFirebase(() => {
+    if (!firestore || !productId) return null;
+    return doc(firestore, 'products', productId);
+  }, [firestore, productId]);
+
+  const { data: product, isLoading: isProductLoading } = useDoc<Product>(productRef);
+
   const form = useForm<CheckoutFormValues>({
     resolver: zodResolver(checkoutFormSchema),
     defaultValues: {
@@ -48,9 +72,84 @@ export default function CheckoutPage() {
     },
   });
 
+  useEffect(() => {
+    if (!isUserLoading && user) {
+      form.setValue('email', user.email || '');
+      const [firstName, ...lastNameParts] = (user.displayName || '').split(' ');
+      form.setValue('firstName', firstName);
+      form.setValue('lastName', lastNameParts.join(' '));
+    }
+  }, [user, isUserLoading, form]);
+
+
   function onSubmit(data: CheckoutFormValues) {
-    console.log(data);
-    // Here you would typically process the payment and create an order
+    if (!firestore || !user || !product) return;
+
+    startTransition(async () => {
+      try {
+        const orderData = {
+          userId: user.uid,
+          customerName: `${data.firstName} ${data.lastName}`,
+          customerEmail: data.email,
+          shippingAddress: {
+            address: data.address,
+            apartment: data.apartment,
+            city: data.city,
+            state: data.state,
+            pincode: data.pincode,
+            phone: data.phone,
+          },
+          items: [{
+            productId: product.id,
+            productName: product.name,
+            price: product.price,
+            quantity: 1,
+            color,
+            size,
+          }],
+          totalAmount: product.price,
+          status: 'Paid',
+          orderDate: serverTimestamp(),
+        };
+
+        const ordersCollection = collection(firestore, `users/${user.uid}/orders`);
+        await addDocumentNonBlocking(ordersCollection, orderData);
+
+        toast({
+          title: "Order Confirmed!",
+          description: "Your order has been placed successfully.",
+        });
+        router.push("/");
+
+      } catch (error) {
+        console.error("Failed to save order:", error);
+        toast({
+          variant: "destructive",
+          title: "Order Failed",
+          description: "Could not place the order at this time.",
+        });
+      }
+    });
+  }
+
+  if (isUserLoading || isProductLoading) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center bg-background">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!productId || !product) {
+    return (
+       <div className="flex h-screen w-full items-center justify-center bg-background text-center p-4">
+         <div>
+          <h2 className="text-2xl font-bold font-headline mb-2">Invalid Checkout Session</h2>
+          <p className="text-muted-foreground mb-4">No product was selected. Please go back and select a product to purchase.</p>
+          <Button onClick={() => router.push('/')}>Back to Home</Button>
+         </div>
+      </div>
+    )
   }
 
   return (
@@ -196,9 +295,9 @@ export default function CheckoutPage() {
                       />
                     </div>
 
-                    <Button type="submit" size="lg" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-[0_0_25px_5px_hsl(var(--primary)/0.4)] transition-shadow duration-300">
-                      <ShoppingBag className="mr-2 h-5 w-5" />
-                      Confirm Order
+                    <Button type="submit" size="lg" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-[0_0_25px_5px_hsl(var(--primary)/0.4)] transition-shadow duration-300" disabled={isPending}>
+                       {isPending ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <ShoppingBag className="mr-2 h-5 w-5" />}
+                      {isPending ? 'Placing Order...' : `Confirm Order (₹${product.price.toFixed(2)})`}
                     </Button>
                   </form>
                 </Form>

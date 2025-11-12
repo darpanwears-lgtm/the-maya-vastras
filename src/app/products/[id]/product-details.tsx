@@ -1,4 +1,3 @@
-
 'use client';
 import type { Product } from '@/lib/types';
 import Image from 'next/image';
@@ -8,9 +7,14 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { CreditCard } from 'lucide-react';
 import Link from 'next/link';
+import { useState } from 'react';
 
 export default function ProductDetails({ product }: { product: Product }) {
+  const [selectedColor, setSelectedColor] = useState(product.colors?.[0] || '');
+  const [selectedSize, setSelectedSize] = useState(product.sizes?.[0] || '');
+
   const imageUrl = product.images?.[0]?.url || 'https://placehold.co/800x1067';
+  const checkoutUrl = `/checkout?productId=${product.id}&color=${selectedColor}&size=${selectedSize}`;
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -40,7 +44,11 @@ export default function ProductDetails({ product }: { product: Product }) {
             {product.colors && product.colors.length > 0 && (
               <div>
                 <h3 className="font-semibold mb-3">Select Color:</h3>
-                <RadioGroup defaultValue={product.colors[0]} className="flex flex-wrap gap-2">
+                <RadioGroup 
+                  defaultValue={selectedColor} 
+                  onValueChange={setSelectedColor}
+                  className="flex flex-wrap gap-2"
+                >
                   {product.colors.map(color => (
                     <div key={color}>
                       <RadioGroupItem value={color} id={`color-${color}`} className="sr-only" />
@@ -59,7 +67,11 @@ export default function ProductDetails({ product }: { product: Product }) {
             {product.sizes && product.sizes.length > 0 && (
                <div>
                 <h3 className="font-semibold mb-3">Select Size:</h3>
-                <RadioGroup defaultValue={product.sizes[0]} className="flex flex-wrap gap-2">
+                <RadioGroup 
+                  defaultValue={selectedSize}
+                  onValueChange={setSelectedSize}
+                  className="flex flex-wrap gap-2"
+                >
                   {product.sizes.map(size => (
                     <div key={size}>
                       <RadioGroupItem value={size} id={`size-${size}`} className="sr-only" />
@@ -77,7 +89,7 @@ export default function ProductDetails({ product }: { product: Product }) {
           </div>
 
           <Button size="lg" asChild className="w-full md:w-auto bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-[0_0_25px_5px_hsl(var(--primary)/0.4)] transition-shadow duration-300">
-            <Link href="/checkout">
+            <Link href={checkoutUrl}>
               <CreditCard className="mr-2 h-5 w-5" />
               Buy Now
             </Link>
