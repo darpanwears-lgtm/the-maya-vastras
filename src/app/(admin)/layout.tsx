@@ -29,79 +29,7 @@ import { Button } from '@/components/ui/button';
 import Header from '@/components/header';
 import { useRouter } from 'next/navigation';
 import MatrixBackground from '@/components/matrix-background';
-import { useUser, useDoc, useFirebase, useMemoFirebase } from '@/firebase';
-import { doc } from 'firebase/firestore';
-
-function AdminUI({ children }: { children: React.ReactNode }) {
-  return (
-    <SidebarProvider>
-      <div className="flex min-h-screen">
-        <Sidebar>
-          <SidebarHeader>
-            <div className="flex items-center justify-between">
-              <Logo />
-              <SidebarTrigger className="hidden md:flex" />
-            </div>
-          </SidebarHeader>
-          <SidebarContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton href="/admin/dashboard" asChild>
-                  <Link href="/admin/dashboard">
-                    <Home />
-                    <span>Dashboard</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton href="/admin/products" asChild>
-                   <Link href="/admin/products">
-                    <Package />
-                    <span>Products</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton href="/admin/settings" asChild>
-                  <Link href="/admin/settings">
-                    <Settings />
-                    <span>Settings</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarSeparator />
-               <SidebarMenuItem>
-                <SidebarMenuButton href="/" asChild>
-                  <Link href="/">
-                    <ArrowLeft />
-                    <span>Back to Home</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarContent>
-          <SidebarFooter>
-            <Button variant="outline" className="w-full" asChild>
-              <Link href="/admin/products/new">
-                <PackagePlus className="mr-2" />
-                New Product
-              </Link>
-            </Button>
-          </SidebarFooter>
-        </Sidebar>
-        <SidebarInset className="bg-background/80 backdrop-blur-sm">
-           <div className="md:hidden flex items-center justify-between p-2 border-b">
-             <Logo/>
-             <SidebarTrigger/>
-           </div>
-           <div className="p-4 md:p-6 lg:p-8">
-            {children}
-           </div>
-        </SidebarInset>
-      </div>
-    </SidebarProvider>
-  )
-}
+import { useUser } from '@/firebase';
 
 export default function AdminLayout({
   children,
@@ -109,15 +37,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
-  const { firestore } = useFirebase();
   const { user, isUserLoading } = useUser();
-
-  const adminRoleRef = useMemoFirebase(() => {
-    if (!firestore || !user?.uid) return null;
-    return doc(firestore, `roles_admin/${user.uid}`);
-  }, [firestore, user?.uid]);
-
-  const { data: adminRole, isLoading: isAdminRoleLoading } = useDoc(adminRoleRef);
 
   React.useEffect(() => {
     // Redirect to login if auth check is complete and no user is found
@@ -126,39 +46,98 @@ export default function AdminLayout({
     }
   }, [isUserLoading, user, router]);
 
-  const isLoading = isUserLoading || (user && isAdminRoleLoading);
-  const isAllowed = adminRole !== null && adminRole !== undefined;
+  // Show a loading screen while user state is being determined
+  if (isUserLoading) {
+    return (
+      <>
+        <MatrixBackground />
+        <div className="flex h-screen w-full items-center justify-center bg-background">
+          <div className="relative z-10 flex items-center gap-2 text-lg">
+            <Loader2 className="h-6 w-6 animate-spin text-primary" />
+            <span>Loading...</span>
+          </div>
+        </div>
+      </>
+    );
+  }
 
-  return (
-    <>
-      <MatrixBackground />
-      <div className="relative z-10">
-        <Header />
-        
-        {isLoading && (
-          <div className="flex h-[calc(100vh-theme(spacing.14))] w-full items-center justify-center bg-background">
-            <div className="relative z-10 flex items-center gap-2 text-lg">
-                <Loader2 className="h-6 w-6 animate-spin text-primary" />
-                <span>Authenticating & Verifying Access...</span>
+  // If user is logged in, show the admin UI
+  if (user) {
+    return (
+        <SidebarProvider>
+          <MatrixBackground />
+          <div className="relative z-10">
+            <Header />
+            <div className="flex min-h-screen">
+              <Sidebar>
+                <SidebarHeader>
+                  <div className="flex items-center justify-between">
+                    <Logo />
+                    <SidebarTrigger className="hidden md:flex" />
+                  </div>
+                </SidebarHeader>
+                <SidebarContent>
+                  <SidebarMenu>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton href="/admin/dashboard" asChild>
+                        <Link href="/admin/dashboard">
+                          <Home />
+                          <span>Dashboard</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton href="/admin/products" asChild>
+                        <Link href="/admin/products">
+                          <Package />
+                          <span>Products</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton href="/admin/settings" asChild>
+                        <Link href="/admin/settings">
+                          <Settings />
+                          <span>Settings</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                    <SidebarSeparator />
+                    <SidebarMenuItem>
+                      <SidebarMenuButton href="/" asChild>
+                        <Link href="/">
+                          <ArrowLeft />
+                          <span>Back to Home</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  </SidebarMenu>
+                </SidebarContent>
+                <SidebarFooter>
+                  <Button variant="outline" className="w-full" asChild>
+                    <Link href="/admin/products/new">
+                      <PackagePlus className="mr-2" />
+                      New Product
+                    </Link>
+                  </Button>
+                </SidebarFooter>
+              </Sidebar>
+              <SidebarInset className="bg-background/80 backdrop-blur-sm">
+                <div className="md:hidden flex items-center justify-between p-2 border-b">
+                  <Logo/>
+                  <SidebarTrigger/>
+                </div>
+                <div className="p-4 md:p-6 lg:p-8">
+                  {children}
+                </div>
+              </SidebarInset>
             </div>
           </div>
-        )}
-        
-        {!isLoading && !isAllowed && (
-           <div className="flex flex-col items-center justify-center h-[calc(100vh-theme(spacing.14))] text-center p-4">
-               <h1 className="text-2xl font-bold mb-4">Access Denied</h1>
-               <p className="text-muted-foreground mb-8 max-w-md">You do not have permission to view this page. Ensure you are logged in with an admin account.</p>
-               <Button asChild>
-                   <Link href="/">Return to Homepage</Link>
-               </Button>
-           </div>
-        )}
-        
-        {!isLoading && isAllowed && (
-          <AdminUI>{children}</AdminUI>
-        )}
-        
-      </div>
-    </>
-  );
+        </SidebarProvider>
+    );
+  }
+
+  // If no user and not loading, it will be redirected by useEffect.
+  // Return null or a minimal loader to avoid flash of content.
+  return null;
 }
