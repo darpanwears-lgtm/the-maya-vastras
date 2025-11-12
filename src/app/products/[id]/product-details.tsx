@@ -6,9 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
-import { CreditCard, ShieldCheck, ArrowLeft } from 'lucide-react';
+import { CreditCard, ShieldCheck, ArrowLeft, Clock } from 'lucide-react';
 import Link from 'next/link';
-import { useState, useRef } from 'react';
+import { useState, useRef, useMemo } from 'react';
 import { useUser } from '@/firebase';
 import { useRouter } from 'next/navigation';
 import {
@@ -24,6 +24,7 @@ import {
   DialogContent,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { Timestamp } from 'firebase/firestore';
 
 
 export default function ProductDetails({ product }: { product: Product }) {
@@ -35,6 +36,14 @@ export default function ProductDetails({ product }: { product: Product }) {
     Autoplay({ delay: 5000, stopOnInteraction: true })
   )
 
+  const isUpcoming = useMemo(() => {
+    if (!product.launchDateStart) return false;
+    const startDate = product.launchDateStart instanceof Timestamp 
+      ? product.launchDateStart.toDate()
+      : new Date(product.launchDateStart);
+    return startDate > new Date();
+  }, [product.launchDateStart]);
+  
   const checkoutUrl = `/checkout?productId=${product.id}&color=${selectedColor}&size=${selectedSize}`;
 
   return (
@@ -42,7 +51,7 @@ export default function ProductDetails({ product }: { product: Product }) {
       <div className="mb-8">
         <Button variant="ghost" onClick={() => router.back()}>
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to products
+          Back
         </Button>
       </div>
       <div className="grid md:grid-cols-2 gap-12 items-start">
@@ -124,16 +133,14 @@ export default function ProductDetails({ product }: { product: Product }) {
                   className="flex flex-wrap gap-2"
                 >
                   {product.colors.map(color => (
-                    <div key={color}>
-                      <RadioGroupItem value={color} id={`color-${color}`} className="sr-only" />
-                      <Label 
-                        htmlFor={`color-${color}`}
-                        className="flex items-center justify-center rounded-md border-2 border-muted bg-transparent px-4 py-2 text-sm font-medium hover:bg-accent cursor-pointer data-[state=checked]:border-primary data-[state=checked]:bg-primary/10 data-[state=checked]:text-primary"
-                        data-state={selectedColor === color ? 'checked' : 'unchecked'}
-                      >
-                        {color}
-                      </Label>
-                    </div>
+                    <Label 
+                      key={color}
+                      htmlFor={`color-${color}`}
+                      className="flex items-center justify-center rounded-md border-2 border-muted bg-transparent px-4 py-2 text-sm font-medium hover:bg-accent cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/10 has-[:checked]:text-primary"
+                    >
+                       <RadioGroupItem value={color} id={`color-${color}`} className="sr-only" />
+                      {color}
+                    </Label>
                   ))}
                 </RadioGroup>
               </div>
@@ -148,16 +155,14 @@ export default function ProductDetails({ product }: { product: Product }) {
                   className="flex flex-wrap gap-2"
                 >
                   {product.sizes.map(size => (
-                    <div key={size}>
+                    <Label 
+                      key={size}
+                      htmlFor={`size-${size}`}
+                      className="flex items-center justify-center rounded-md border-2 border-muted bg-transparent px-4 py-2 text-sm font-medium hover:bg-accent cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/10 has-[:checked]:text-primary"
+                    >
                       <RadioGroupItem value={size} id={`size-${size}`} className="sr-only" />
-                      <Label 
-                        htmlFor={`size-${size}`}
-                        className="flex items-center justify-center rounded-md border-2 border-muted bg-transparent px-4 py-2 text-sm font-medium hover:bg-accent cursor-pointer data-[state=checked]:border-primary data-[state=checked]:bg-primary/10 data-[state=checked]:text-primary"
-                         data-state={selectedSize === size ? 'checked' : 'unchecked'}
-                      >
-                        {size}
-                      </Label>
-                    </div>
+                      {size}
+                    </Label>
                   ))}
                 </RadioGroup>
               </div>
@@ -168,8 +173,8 @@ export default function ProductDetails({ product }: { product: Product }) {
             {user ? (
               <Button size="lg" asChild className="w-full md:w-auto bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-[0_0_25px_5px_hsl(var(--primary)/0.4)] transition-shadow duration-300">
                 <Link href={checkoutUrl}>
-                  <CreditCard className="mr-2 h-5 w-5" />
-                  Buy Now
+                  {isUpcoming ? <Clock className="mr-2 h-5 w-5" /> : <CreditCard className="mr-2 h-5 w-5" />}
+                  {isUpcoming ? 'Pre-Order Now' : 'Buy Now'}
                 </Link>
               </Button>
             ) : (

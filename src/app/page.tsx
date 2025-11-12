@@ -5,24 +5,30 @@ import { upcomingLaunch } from '@/lib/data';
 import ProductCard from '@/components/product-card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import Image from 'next/image';
 import Header from '@/components/header';
 import { useFirebase, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query } from 'firebase/firestore';
+import { collection, query, where, Timestamp } from 'firebase/firestore';
 import type { Product } from '@/lib/types';
 import { Loader2 } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Home() {
   const { firestore } = useFirebase();
 
   const productsQuery = useMemoFirebase(() => {
     if (!firestore) return null;
+    // Query for products that are currently live
     return query(
-      collection(firestore, "products")
+      collection(firestore, "products"),
+      where("launchDateStart", "<=", Timestamp.now()),
     );
   }, [firestore]);
 
-  const { data: availableProducts, isLoading } = useCollection<Product>(productsQuery);
+  const { data: products, isLoading } = useCollection<Product>(productsQuery);
+  
+  // Filter out products whose launch window has ended
+  const availableProducts = products?.filter(p => p.launchDateEnd.toDate() > new Date());
+
 
   return (
       <div className="relative z-10 flex min-h-screen flex-col">
@@ -40,8 +46,8 @@ export default function Home() {
                 <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
                   {upcomingLaunch.description}
                 </p>
-                <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-[0_0_25px_5px_hsl(var(--primary)/0.4)] transition-shadow duration-300">
-                  Explore The Collection
+                <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-[0_0_25px_5px_hsl(var(--primary)/0.4)] transition-shadow duration-300" asChild>
+                  <Link href="/upcoming">Upcoming Products</Link>
                 </Button>
               </div>
             </section>
