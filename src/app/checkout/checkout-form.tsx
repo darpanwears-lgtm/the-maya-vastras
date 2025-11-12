@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Loader2, ShoppingBag } from 'lucide-react';
+import { Loader2, ShoppingBag, ArrowLeft } from 'lucide-react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useUser, useFirebase, useDoc, useMemoFirebase } from '@/firebase';
 import { useEffect, useTransition } from 'react';
@@ -93,7 +93,6 @@ export default function CheckoutForm() {
         const fullAddress = `${data.address}, ${data.apartment || ''}\n${data.city}, ${data.state} - ${data.pincode}`;
         const customerName = `${data.firstName} ${data.lastName}`;
         
-        // Generate the email body using the Genkit flow
         const emailContent = await generateOrderEmailBody({
           customerName,
           productName: product.name,
@@ -108,10 +107,8 @@ export default function CheckoutForm() {
         const recipient = 'gamingcloud3401@gmail.com';
         const subject = `New Order for ${product.name}`;
         
-        // Create the mailto link
         const mailtoLink = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailContent.emailBody)}`;
 
-        // Open the user's email client
         window.location.href = mailtoLink;
         
         toast({
@@ -119,7 +116,6 @@ export default function CheckoutForm() {
           description: "Your email app has opened with the order details. Please press 'Send' to confirm your purchase.",
         });
   
-        // Optional: Redirect after a delay to give the user time to see the toast.
         setTimeout(() => {
             router.push("/");
         }, 3000);
@@ -158,8 +154,16 @@ export default function CheckoutForm() {
   return (
     <Card className="max-w-2xl mx-auto border-border/50 bg-card/50">
       <CardHeader>
-        <CardTitle className="text-3xl font-headline">Checkout</CardTitle>
-        <CardDescription>Enter your shipping information to complete your order.</CardDescription>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle className="text-3xl font-headline">Checkout</CardTitle>
+            <CardDescription>Enter your shipping information to complete your order.</CardDescription>
+          </div>
+          <Button variant="ghost" onClick={() => router.back()}>
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Go Back
+          </Button>
+        </div>
       </CardHeader>
       <CardContent>
         <Form {...form}>
