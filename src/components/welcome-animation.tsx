@@ -1,3 +1,4 @@
+
 'use client';
 
 import { cn } from '@/lib/utils';
@@ -16,7 +17,7 @@ const WelcomeAnimation = ({ isVisible }: { isVisible: boolean }) => {
       )}
     >
         <div className="text-center p-8 z-10">
-            <h1 className="text-xl md:text-2xl font-body tracking-widest text-muted-foreground mb-4 animate-fade-in-slow">
+            <h1 className="text-lg md:text-2xl font-body tracking-widest text-muted-foreground mb-4 animate-fade-in-slow">
               {message.split('').map((char, index) => (
                 <span
                   key={index}

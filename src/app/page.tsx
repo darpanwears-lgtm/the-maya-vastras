@@ -82,7 +82,7 @@ export default function Home() {
         <Header />
         <main className="flex-1">
           <div className="container mx-auto px-4 py-8">
-            <section className="relative text-center my-16 py-20 rounded-lg overflow-hidden">
+            <section className="relative text-center my-8 py-12 md:my-16 md:py-20 rounded-lg overflow-hidden">
               <div className="relative z-20">
                 {isLoadingHero ? (
                   <div className="flex justify-center mb-4"><Loader2 className="h-6 w-6 animate-spin" /></div>
@@ -91,10 +91,10 @@ export default function Home() {
                     <Badge variant="outline" className="mb-4 border-primary text-primary text-sm py-1 px-4 bg-background/50">
                       {heroContent.date}
                     </Badge>
-                    <h1 className="text-5xl md:text-7xl font-bold font-headline tracking-tighter mb-4 text-white">
+                    <h1 className="text-4xl md:text-7xl font-bold font-headline tracking-tighter mb-4 text-white">
                       {heroContent.name}
                     </h1>
-                    <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+                    <p className="text-base md:text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
                       {heroContent.description}
                     </p>
                   </>
@@ -150,7 +150,7 @@ export default function Home() {
 
 
                 {filteredProducts && filteredProducts.length > 0 ? (
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
                     {filteredProducts.map(product => (
                       <ProductCard key={product.id} product={product} />
                     ))}

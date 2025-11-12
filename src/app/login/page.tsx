@@ -67,7 +67,7 @@ export default function LoginPage() {
             <Card className="w-full max-w-sm border-border/50 bg-card/50">
               <CardHeader className="text-center">
                 <Logo className="mx-auto mb-2" />
-                <CardTitle className="font-headline text-2xl">Enter the Verse</CardTitle>
+                <CardTitle className="font-headline text-xl md:text-2xl">Enter the Verse</CardTitle>
                 <CardDescription>Sign in to continue your journey</CardDescription>
               </CardHeader>
               <CardContent>

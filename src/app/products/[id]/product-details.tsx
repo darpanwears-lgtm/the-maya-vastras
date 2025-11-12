@@ -47,14 +47,14 @@ export default function ProductDetails({ product }: { product: Product }) {
   const checkoutUrl = `/checkout?productId=${product.id}&color=${selectedColor}&size=${selectedSize}`;
 
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div className="container mx-auto px-4 py-8 md:py-12">
       <div className="mb-8">
         <Button variant="ghost" onClick={() => router.back()}>
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back
         </Button>
       </div>
-      <div className="grid md:grid-cols-2 gap-12 items-start">
+      <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-start">
         <div className="relative">
           <Carousel 
              plugins={[plugin.current]}
@@ -116,7 +116,7 @@ export default function ProductDetails({ product }: { product: Product }) {
         <div className="flex flex-col gap-6">
           <div>
             <Badge variant="outline" className="mb-2 border-primary text-primary">{product.garmentType}</Badge>
-            <h1 className="text-4xl lg:text-5xl font-bold font-headline">{product.name}</h1>
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold font-headline">{product.name}</h1>
           </div>
           
           <p className="text-3xl font-bold text-primary">₹{product.price.toFixed(2)}</p>

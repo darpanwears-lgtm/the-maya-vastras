@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useForm } from 'react-hook-form';
@@ -155,9 +156,9 @@ ${fullAddress}
   return (
     <Card className="max-w-2xl mx-auto border-border/50 bg-card/50">
       <CardHeader>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between flex-wrap gap-4">
           <div>
-            <CardTitle className="text-3xl font-headline">Checkout</CardTitle>
+            <CardTitle className="text-2xl md:text-3xl font-headline">Checkout</CardTitle>
             <CardDescription>Enter your shipping information to complete your order.</CardDescription>
           </div>
           <Button variant="ghost" onClick={() => router.back()}>
