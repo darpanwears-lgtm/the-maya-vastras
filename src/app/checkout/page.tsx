@@ -117,7 +117,7 @@ export default function CheckoutPage() {
         
         toast({
           title: "Finalize Your Order",
-          description: "Your email client has been opened to send the order details. Please complete sending the email.",
+          description: "Your email app has opened with the order details. Please press 'Send' to confirm your purchase.",
         });
   
         // Optional: Redirect after a delay to give the user time to see the toast.
