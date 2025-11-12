@@ -15,8 +15,10 @@ const Header = () => {
 
   const handleSignOut = async () => {
     try {
-      await signOut(auth);
-      router.push('/login');
+      if (auth) {
+        await signOut(auth);
+        router.push('/login');
+      }
     } catch (error) {
       console.error("Error signing out: ", error);
     }
