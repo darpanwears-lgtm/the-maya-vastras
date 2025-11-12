@@ -1,16 +1,12 @@
 
-'use client';
-
 import type { Metadata } from 'next';
 import './globals.css';
 import { Space_Grotesk, Cinzel_Decorative } from 'next/font/google';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
 import { FirebaseClientProvider } from '@/firebase';
-import { useState, useEffect } from 'react';
-import WelcomeAnimation from '@/components/welcome-animation';
 import Footer from '@/components/footer';
-
+import ClientLayoutProvider from '@/components/client-layout-provider';
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -23,16 +19,16 @@ const cinzelDecorative = Cinzel_Decorative({
   variable: '--font-cinzel-decorative',
 });
 
+export const metadata: Metadata = {
+  title: 'THE MAYA VASTRA',
+  description: 'A clothing brand with a Vedic, Indian, Maya, black and neon green, Matrix design theme.',
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const metadata: Metadata = {
-    title: 'THE MAYA VASTRA',
-    description: 'A clothing brand with a Vedic, Indian, Maya, black and neon green, Matrix design theme.',
-  };
-
   return (
     <html lang="en" className="dark">
       <head>
@@ -51,15 +47,16 @@ export default function RootLayout({
           cinzelDecorative.variable
         )}
       >
-        <WelcomeAnimation />
         <FirebaseClientProvider>
-          <div className="flex min-h-screen flex-col">
-            <div className="flex-grow">
-              {children}
+          <ClientLayoutProvider>
+            <div className="flex min-h-screen flex-col">
+              <div className="flex-grow">
+                {children}
+              </div>
+              <Footer />
             </div>
-            <Footer />
-          </div>
-          <Toaster />
+            <Toaster />
+          </ClientLayoutProvider>
         </FirebaseClientProvider>
       </body>
     </html>

@@ -6,20 +6,14 @@ import Logo from './logo';
 import { useEffect, useState } from 'react';
 
 const WelcomeAnimation = () => {
-  const [isVisible, setIsVisible] = useState(true);
   const [isAnimationDone, setIsAnimationDone] = useState(false);
-  const message = "WELCOME TO";
 
   useEffect(() => {
     const hasBeenShown = sessionStorage.getItem('welcomeAnimationShown');
     if (hasBeenShown) {
-      setIsVisible(false);
+      setIsAnimationDone(true);
       return;
     }
-
-    const visibilityTimer = setTimeout(() => {
-      setIsVisible(false);
-    }, 4000); // Fades out at 4s
 
     const removalTimer = setTimeout(() => {
       setIsAnimationDone(true);
@@ -27,7 +21,6 @@ const WelcomeAnimation = () => {
     }, 5000); // Component removes itself at 5s
 
     return () => {
-      clearTimeout(visibilityTimer);
       clearTimeout(removalTimer);
     };
   }, []);
@@ -39,13 +32,13 @@ const WelcomeAnimation = () => {
   return (
     <div
       className={cn(
-        "fixed inset-0 z-[200] flex flex-col items-center justify-center bg-background transition-opacity duration-1000",
-        !isVisible && "opacity-0 pointer-events-none"
+        "fixed inset-0 z-[200] flex flex-col items-center justify-center bg-background animate-fade-out"
       )}
+      style={{ animationDelay: '4s', animationFillMode: 'forwards' }}
     >
         <div className="text-center p-8 z-10">
             <h1 className="text-lg md:text-2xl font-body tracking-widest text-muted-foreground mb-4 animate-fade-in-slow">
-              {message.split('').map((char, index) => (
+              {"WELCOME TO".split('').map((char, index) => (
                 <span
                   key={index}
                   className="animate-char-in"
@@ -78,6 +71,15 @@ const WelcomeAnimation = () => {
 
 
       <style jsx>{`
+        @keyframes fadeOut {
+          from { opacity: 1; pointer-events: auto; }
+          to { opacity: 0; pointer-events: none; }
+        }
+        .animate-fade-out {
+          animation-name: fadeOut;
+          animation-duration: 1s;
+        }
+
         @keyframes fadeIn {
           from { opacity: 0; }
           to { opacity: 1; }
