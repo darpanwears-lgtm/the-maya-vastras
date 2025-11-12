@@ -9,11 +9,15 @@ import Header from '@/components/header';
 import { useFirebase, useCollection, useMemoFirebase, useDoc } from '@/firebase';
 import { collection, query, where, Timestamp, doc } from 'firebase/firestore';
 import type { Product, HeroSection } from '@/lib/types';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Search } from 'lucide-react';
 import Link from 'next/link';
+import { useState, useMemo } from 'react';
+import { Input } from '@/components/ui/input';
 
 export default function Home() {
   const { firestore } = useFirebase();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('All');
 
   // Product Data Fetching
   const productsQuery = useMemoFirebase(() => {
@@ -25,12 +29,30 @@ export default function Home() {
   }, [firestore]);
 
   const { data: products, isLoading: isLoadingProducts } = useCollection<Product>(productsQuery);
-  
-  // Filter out products whose launch window has ended
-  const availableProducts = products?.filter(p => {
-    if (!p.launchDateEnd) return true;
-    return p.launchDateEnd.toDate() > new Date();
-  });
+
+  // Memoize categories
+  const categories = useMemo(() => {
+    if (!products) return ['All'];
+    const uniqueCategories = new Set(products.map(p => p.category));
+    return ['All', ...Array.from(uniqueCategories)];
+  }, [products]);
+
+  // Filter products based on search and category
+  const filteredProducts = useMemo(() => {
+    return products
+      ?.filter(p => { // First, filter by availability
+        if (!p.launchDateEnd) return true;
+        return p.launchDateEnd.toDate() > new Date();
+      })
+      .filter(p => { // Then, filter by category
+        if (selectedCategory === 'All') return true;
+        return p.category === selectedCategory;
+      })
+      .filter(p => { // Finally, filter by search term
+        return p.name.toLowerCase().includes(searchTerm.toLowerCase());
+      });
+  }, [products, selectedCategory, searchTerm]);
+
 
   // Hero Section Data Fetching
   const heroContentRef = useMemoFirebase(() => {
@@ -81,14 +103,46 @@ export default function Home() {
                     <span>Loading Products...</span>
                  </div>
                </section>
-            ) : availableProducts && availableProducts.length > 0 ? (
+            ) : products && products.length > 0 ? (
               <section>
                 <h2 className="text-3xl font-bold text-center mb-10 font-headline">Available Now</h2>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                  {availableProducts.map(product => (
-                    <ProductCard key={product.id} product={product} />
-                  ))}
+                
+                <div className="mb-10 space-y-6">
+                  <div className="relative max-w-lg mx-auto">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <Input
+                      type="text"
+                      placeholder="Search products..."
+                      className="pl-10"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                  </div>
+                  <div className="flex justify-center flex-wrap gap-2">
+                    {categories.map(category => (
+                      <Button
+                        key={category}
+                        variant={selectedCategory === category ? 'default' : 'outline'}
+                        onClick={() => setSelectedCategory(category)}
+                      >
+                        {category}
+                      </Button>
+                    ))}
+                  </div>
                 </div>
+
+                {filteredProducts && filteredProducts.length > 0 ? (
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                    {filteredProducts.map(product => (
+                      <ProductCard key={product.id} product={product} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center my-20 p-8 border border-dashed border-border rounded-lg">
+                    <h3 className="text-xl font-bold font-headline mb-2">No Products Found</h3>
+                    <p className="text-muted-foreground">Try adjusting your search or filter.</p>
+                  </div>
+                )}
               </section>
             ) : (
               <section className="text-center my-20 p-8 border border-dashed border-border rounded-lg">
