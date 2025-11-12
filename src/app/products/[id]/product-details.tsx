@@ -109,9 +109,9 @@ export default function ProductDetails({ product }: { product: Product }) {
           <div className="space-y-4">
             {product.colors && product.colors.length > 0 && (
               <div>
-                <h3 className="font-semibold mb-3">Select Color:</h3>
+                <h3 className="font-semibold mb-3">Select Color: <span className="text-primary font-bold">{selectedColor}</span></h3>
                 <RadioGroup 
-                  defaultValue={selectedColor} 
+                  value={selectedColor} 
                   onValueChange={setSelectedColor}
                   className="flex flex-wrap gap-2"
                 >
@@ -120,7 +120,8 @@ export default function ProductDetails({ product }: { product: Product }) {
                       <RadioGroupItem value={color} id={`color-${color}`} className="sr-only" />
                       <Label 
                         htmlFor={`color-${color}`}
-                        className="flex items-center justify-center rounded-md border-2 border-muted bg-transparent px-4 py-2 text-sm font-medium hover:bg-accent cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/10 has-[:checked]:text-primary"
+                        className="flex items-center justify-center rounded-md border-2 border-muted bg-transparent px-4 py-2 text-sm font-medium hover:bg-accent cursor-pointer data-[state=checked]:border-primary data-[state=checked]:bg-primary/10 data-[state=checked]:text-primary"
+                        data-state={selectedColor === color ? 'checked' : 'unchecked'}
                       >
                         {color}
                       </Label>
@@ -132,9 +133,9 @@ export default function ProductDetails({ product }: { product: Product }) {
 
             {product.sizes && product.sizes.length > 0 && (
                <div>
-                <h3 className="font-semibold mb-3">Select Size:</h3>
+                <h3 className="font-semibold mb-3">Select Size: <span className="text-primary font-bold">{selectedSize}</span></h3>
                 <RadioGroup 
-                  defaultValue={selectedSize}
+                  value={selectedSize}
                   onValueChange={setSelectedSize}
                   className="flex flex-wrap gap-2"
                 >
@@ -143,7 +144,8 @@ export default function ProductDetails({ product }: { product: Product }) {
                       <RadioGroupItem value={size} id={`size-${size}`} className="sr-only" />
                       <Label 
                         htmlFor={`size-${size}`}
-                        className="flex items-center justify-center rounded-md border-2 border-muted bg-transparent px-4 py-2 text-sm font-medium hover:bg-accent cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/10 has-[:checked]:text-primary"
+                        className="flex items-center justify-center rounded-md border-2 border-muted bg-transparent px-4 py-2 text-sm font-medium hover:bg-accent cursor-pointer data-[state=checked]:border-primary data-[state=checked]:bg-primary/10 data-[state=checked]:text-primary"
+                         data-state={selectedSize === size ? 'checked' : 'unchecked'}
                       >
                         {size}
                       </Label>
