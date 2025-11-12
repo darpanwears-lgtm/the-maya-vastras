@@ -3,7 +3,7 @@ import type { Product } from '@/lib/types';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from './ui/button';
-import { ShoppingCart } from 'lucide-react';
+import { Eye } from 'lucide-react';
 import Link from 'next/link';
 
 type ProductCardProps = {
@@ -36,9 +36,11 @@ const ProductCard = ({ product }: ProductCardProps) => {
         </CardContent>
       </Link>
       <CardFooter className="p-4 pt-0 mt-auto">
-        <Button className="w-full bg-primary/90 text-primary-foreground transition-all hover:bg-primary hover:shadow-[0_0_15px_2px_hsl(var(--primary)/0.5)]">
-            <ShoppingCart className="mr-2 h-4 w-4" />
-            Add to Cart
+        <Button asChild className="w-full bg-primary/90 text-primary-foreground transition-all hover:bg-primary hover:shadow-[0_0_15px_2px_hsl(var(--primary)/0.5)]">
+            <Link href={`/products/${product.id}`}>
+              <Eye className="mr-2 h-4 w-4" />
+              View Product
+            </Link>
         </Button>
       </CardFooter>
     </Card>

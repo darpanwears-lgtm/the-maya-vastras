@@ -6,7 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
-import { ShoppingCart } from 'lucide-react';
+import { CreditCard, ShoppingCart } from 'lucide-react';
+import Link from 'next/link';
 
 export default function ProductDetailPage({ params }: { params: { id: string } }) {
   const product = products.find(p => p.id === params.id);
@@ -79,9 +80,11 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
             </div>
           </div>
 
-          <Button size="lg" className="w-full md:w-auto bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-[0_0_25px_5px_hsl(var(--primary)/0.4)] transition-shadow duration-300">
-            <ShoppingCart className="mr-2 h-5 w-5" />
-            Add to Cart
+          <Button size="lg" asChild className="w-full md:w-auto bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-[0_0_25px_5px_hsl(var(--primary)/0.4)] transition-shadow duration-300">
+            <Link href="/checkout">
+              <CreditCard className="mr-2 h-5 w-5" />
+              Buy Now
+            </Link>
           </Button>
         </div>
       </div>
