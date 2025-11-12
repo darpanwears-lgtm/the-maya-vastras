@@ -1,3 +1,6 @@
+
+'use client';
+
 import * as React from 'react';
 import Link from 'next/link';
 import {
@@ -23,12 +26,15 @@ import {
 import Logo from '@/components/logo';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/header';
+import { usePathname } from 'next/navigation';
 
 export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+  const isLoginPage = pathname.startsWith('/login');
 
   // Mock admin check. In a real app, this would involve checking user roles from a session.
   const isAdmin = true;
@@ -48,7 +54,7 @@ export default function AdminLayout({
   return (
     <>
       <div className="relative z-10">
-        <Header />
+        {!isLoginPage && <Header />}
         <SidebarProvider>
           <div className="flex min-h-screen">
             <Sidebar>
@@ -103,7 +109,7 @@ export default function AdminLayout({
                 </Button>
               </SidebarFooter>
             </Sidebar>
-            <SidebarInset className="bg-transparent">
+            <SidebarInset className="bg-background/80 backdrop-blur-sm">
                <div className="md:hidden flex items-center justify-between p-2 border-b">
                  <Logo/>
                  <SidebarTrigger/>

@@ -7,7 +7,6 @@ import { Space_Grotesk, Cinzel_Decorative } from 'next/font/google';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
 import MatrixBackground from '@/components/matrix-background';
-import Header from '@/components/header';
 import { usePathname } from 'next/navigation';
 
 const spaceGrotesk = Space_Grotesk({
@@ -28,6 +27,7 @@ export default function RootLayout({
 }>) {
   const pathname = usePathname();
   const isProductPage = pathname.startsWith('/products/');
+  const isAdminPage = pathname.startsWith('/admin');
 
   const metadata: Metadata = {
     title: 'THE MAYA VASTRA',
