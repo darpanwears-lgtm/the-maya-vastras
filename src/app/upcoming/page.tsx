@@ -79,7 +79,7 @@ export default function UpcomingPage() {
             <CardHeader>
               <CardTitle className="font-headline flex items-center gap-2">
                 <Lock className="text-primary"/>
-                Access Required
+                Prepaid Access
               </CardTitle>
               <CardDescription>
                 This drop is password protected. Enter the access code to continue.
