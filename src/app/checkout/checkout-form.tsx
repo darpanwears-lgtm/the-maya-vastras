@@ -21,7 +21,6 @@ import { useEffect, useTransition } from 'react';
 import { Product } from '@/lib/types';
 import { doc } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
-import { generateOrderEmailBody } from '@/ai/flows/send-order-email';
 
 const checkoutFormSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address.' }),
@@ -93,27 +92,29 @@ export default function CheckoutForm() {
         const fullAddress = `${data.address}, ${data.apartment || ''}\n${data.city}, ${data.state} - ${data.pincode}`;
         const customerName = `${data.firstName} ${data.lastName}`;
         
-        const emailContent = await generateOrderEmailBody({
-          customerName,
-          productName: product.name,
-          price: product.price,
-          color,
-          size,
-          address: fullAddress,
-          email: data.email,
-          phone: data.phone,
-        });
-
-        const recipient = 'gamingcloud3401@gmail.com';
-        const subject = `New Order for ${product.name}`;
+        const message = `New Order Details:
+--------------------
+Customer: ${customerName}
+Email: ${data.email}
+Phone: ${data.phone}
+--------------------
+Product: ${product.name}
+Color: ${color}
+Size: ${size}
+Price: ₹${product.price.toFixed(2)}
+--------------------
+Shipping Address:
+${fullAddress}
+`;
         
-        const mailtoLink = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailContent.emailBody)}`;
+        const adminPhoneNumber = '917497810643'; // Country code + phone number without '+' or spaces
+        const whatsappUrl = `https://wa.me/${adminPhoneNumber}?text=${encodeURIComponent(message)}`;
 
-        window.location.href = mailtoLink;
+        window.open(whatsappUrl, '_blank');
         
         toast({
           title: "Finalize Your Order",
-          description: "Your email app has opened with the order details. Please press 'Send' to confirm your purchase.",
+          description: "Your order details are ready to be sent on WhatsApp. Please press send to confirm.",
         });
   
         setTimeout(() => {
@@ -125,7 +126,7 @@ export default function CheckoutForm() {
         toast({
           variant: "destructive",
           title: "Order Failed",
-          description: "Could not prepare the order email at this time.",
+          description: "Could not prepare the order details at this time.",
         });
       }
     });
