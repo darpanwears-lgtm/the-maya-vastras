@@ -27,14 +27,16 @@ export default function LoginPage() {
   const { toast } = useToast();
   const { user, isUserLoading } = useUser();
   const [isSigningIn, setIsSigningIn] = useState(false);
+  const [loginSuccess, setLoginSuccess] = useState(false);
 
   useEffect(() => {
-    if (!isUserLoading && user) {
+    if (!isUserLoading && user && !loginSuccess) {
+        setLoginSuccess(true);
         setTimeout(() => {
             router.push('/');
         }, 2500);
     }
-  }, [user, isUserLoading, router]);
+  }, [user, isUserLoading, router, loginSuccess]);
 
   const handleGoogleSignIn = async () => {
     if (!auth) {
@@ -49,7 +51,7 @@ export default function LoginPage() {
     const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);
-      // The useEffect will handle the redirect on successful login after animation
+      // The useEffect will now handle setting loginSuccess to true and triggering the animation.
     } catch (error: any) {
       console.error("Error signing in with Google: ", error);
       toast({
@@ -57,11 +59,12 @@ export default function LoginPage() {
         title: "Sign-in Failed",
         description: error.message || "An unknown error occurred during sign-in.",
       });
-      setIsSigningIn(false);
+    } finally {
+        setIsSigningIn(false);
     }
   };
 
-  if (isSigningIn || (!isUserLoading && user)) {
+  if (loginSuccess) {
      return (
       <div className="flex h-screen w-full items-center justify-center bg-background">
         <MatrixBackground />
