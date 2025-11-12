@@ -100,7 +100,7 @@ export default function Home() {
                   </>
                 )}
                 <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-[0_0_25px_5px_hsl(var(--primary)/0.4)] transition-shadow duration-300" asChild>
-                  <Link href="/upcoming">Upcoming Products</Link>
+                  <Link href="/upcoming">Early Access</Link>
                 </Button>
               </div>
             </section>
