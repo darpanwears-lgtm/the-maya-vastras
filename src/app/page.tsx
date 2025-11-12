@@ -38,7 +38,7 @@ export default function Home() {
   const { firestore } = useFirebase();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const plugin = useRef(Autoplay({ delay: 3000, stopOnInteraction: true }));
+  const plugin = useRef(Autoplay({ delay: 2000, stopOnInteraction: true }));
   
   // Product Data Fetching
   const productsQuery = useMemoFirebase(() => {
