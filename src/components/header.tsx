@@ -69,7 +69,7 @@ const Header = () => {
             <UnlockingAnimation />
         </div>
     )}
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-black/50 backdrop-blur">
       <div className="container flex h-14 items-center">
         <Logo />
         <div className="flex flex-1 items-center justify-center space-x-2 md:space-x-4">
