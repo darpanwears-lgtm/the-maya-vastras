@@ -1,10 +1,9 @@
 import type { Metadata } from 'next';
-import './globals.css';
 import { Space_Grotesk, Cinzel_Decorative } from 'next/font/google';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
-import MatrixBackground from '@/components/matrix-background';
 import Header from '@/components/header';
+import Image from 'next/image';
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -22,31 +21,31 @@ export const metadata: Metadata = {
   description: 'A clothing brand with a Vedic, Indian, Maya, black and neon green, Matrix design theme.',
 };
 
-export default function RootLayout({
+export default function ProductLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body
+    <div
         className={cn(
           'font-body antialiased',
           spaceGrotesk.variable,
           cinzelDecorative.variable
         )}
       >
-        {children}
+        <Image 
+            src="https://images.unsplash.com/photo-1588523334946-f6d7c71676de?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            alt="Peaceful Vedic background"
+            fill
+            className="object-cover w-full h-full z-0 opacity-20"
+            data-ai-hint="vedic pattern"
+        />
+        <div className="relative z-10 flex min-h-screen flex-col">
+          <Header />
+          <main className="flex-1">{children}</main>
+        </div>
         <Toaster />
-      </body>
-    </html>
+      </div>
   );
 }

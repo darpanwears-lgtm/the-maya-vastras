@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Logo from "@/components/logo";
+import MatrixBackground from "@/components/matrix-background";
+import Header from "@/components/header";
 
 const GoogleIcon = () => (
   <svg className="mr-2 h-4 w-4" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
@@ -11,25 +13,33 @@ const GoogleIcon = () => (
 
 export default function LoginPage() {
   return (
-    <div className="flex min-h-[calc(100vh-theme(spacing.14))] items-center justify-center p-4">
-      <Card className="w-full max-w-sm border-border/50 bg-card/50">
-        <CardHeader className="text-center">
-          <Logo className="mx-auto mb-2" />
-          <CardTitle className="font-headline text-2xl">Enter the Verse</CardTitle>
-          <CardDescription>Sign in to continue your journey</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-col space-y-4">
-            <Button className="w-full bg-white text-black hover:bg-gray-200">
-                <GoogleIcon/>
-                Sign in with Google
-            </Button>
-            <p className="px-8 text-center text-sm text-muted-foreground">
-              By continuing, you agree to our Terms of Service and Privacy Policy.
-            </p>
+    <>
+      <MatrixBackground />
+      <div className="relative z-10 flex min-h-screen flex-col">
+        <Header />
+        <main className="flex-1">
+          <div className="flex min-h-[calc(100vh-theme(spacing.14))] items-center justify-center p-4">
+            <Card className="w-full max-w-sm border-border/50 bg-card/50">
+              <CardHeader className="text-center">
+                <Logo className="mx-auto mb-2" />
+                <CardTitle className="font-headline text-2xl">Enter the Verse</CardTitle>
+                <CardDescription>Sign in to continue your journey</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-col space-y-4">
+                  <Button className="w-full bg-white text-black hover:bg-gray-200">
+                      <GoogleIcon/>
+                      Sign in with Google
+                  </Button>
+                  <p className="px-8 text-center text-sm text-muted-foreground">
+                    By continuing, you agree to our Terms of Service and Privacy Policy.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
           </div>
-        </CardContent>
-      </Card>
-    </div>
+        </main>
+      </div>
+    </>
   );
 }
