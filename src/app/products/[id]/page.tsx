@@ -43,21 +43,40 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
           
           <p className="text-muted-foreground leading-relaxed">{product.description}</p>
           
-          <div>
-            <h3 className="font-semibold mb-3">Select Size:</h3>
-            <RadioGroup defaultValue={product.sizes[0]} className="flex flex-wrap gap-2">
-              {product.sizes.map(size => (
-                <div key={size}>
-                  <RadioGroupItem value={size} id={`size-${size}`} className="sr-only" />
-                  <Label 
-                    htmlFor={`size-${size}`}
-                    className="flex items-center justify-center rounded-md border-2 border-muted bg-transparent px-4 py-2 text-sm font-medium hover:bg-accent cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/10 has-[:checked]:text-primary"
-                  >
-                    {size}
-                  </Label>
-                </div>
-              ))}
-            </RadioGroup>
+          <div className="space-y-4">
+            <div>
+              <h3 className="font-semibold mb-3">Select Color:</h3>
+              <RadioGroup defaultValue={product.colors[0]} className="flex flex-wrap gap-2">
+                {product.colors.map(color => (
+                  <div key={color}>
+                    <RadioGroupItem value={color} id={`color-${color}`} className="sr-only" />
+                    <Label 
+                      htmlFor={`color-${color}`}
+                      className="flex items-center justify-center rounded-md border-2 border-muted bg-transparent px-4 py-2 text-sm font-medium hover:bg-accent cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/10 has-[:checked]:text-primary"
+                    >
+                      {color}
+                    </Label>
+                  </div>
+                ))}
+              </RadioGroup>
+            </div>
+
+            <div>
+              <h3 className="font-semibold mb-3">Select Size:</h3>
+              <RadioGroup defaultValue={product.sizes[0]} className="flex flex-wrap gap-2">
+                {product.sizes.map(size => (
+                  <div key={size}>
+                    <RadioGroupItem value={size} id={`size-${size}`} className="sr-only" />
+                    <Label 
+                      htmlFor={`size-${size}`}
+                      className="flex items-center justify-center rounded-md border-2 border-muted bg-transparent px-4 py-2 text-sm font-medium hover:bg-accent cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/10 has-[:checked]:text-primary"
+                    >
+                      {size}
+                    </Label>
+                  </div>
+                ))}
+              </RadioGroup>
+            </div>
           </div>
 
           <Button size="lg" className="w-full md:w-auto bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-[0_0_25px_5px_hsl(var(--primary)/0.4)] transition-shadow duration-300">
