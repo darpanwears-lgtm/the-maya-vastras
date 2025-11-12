@@ -39,18 +39,23 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
-  const { firestore, user, isUserLoading } = useFirebase();
+  const { firestore } = useFirebase();
+  const { user, isUserLoading } = useUser();
 
   const adminRoleRef = useMemoFirebase(() => {
-    if (!firestore || !user) return null;
+    // Start checking as soon as we have a user ID, even if user object is resolving.
+    if (!firestore || !user?.uid) return null;
     return doc(firestore, `roles_admin/${user.uid}`);
-  }, [firestore, user]);
+  }, [firestore, user?.uid]);
 
   const { data: adminRole, isLoading: isAdminRoleLoading } = useDoc(adminRoleRef);
-  const isAdmin = !!adminRole;
-  const isLoading = isUserLoading || isAdminRoleLoading;
   
+  // The overall loading is finished when both the user check AND the admin role check are done.
+  const isLoading = isUserLoading || isAdminRoleLoading;
+  const isAdmin = !!adminRole;
+
   React.useEffect(() => {
+    // If loading is finished and there's no user, redirect to login.
     if (!isLoading && !user) {
       router.push('/login');
     }
