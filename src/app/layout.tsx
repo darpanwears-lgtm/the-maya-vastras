@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
 import MatrixBackground from '@/components/matrix-background';
 import { usePathname } from 'next/navigation';
+import { FirebaseClientProvider } from '@/firebase';
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -51,9 +52,11 @@ export default function RootLayout({
           cinzelDecorative.variable
         )}
       >
-        {!isProductPage && <MatrixBackground />}
-        {children}
-        <Toaster />
+        <FirebaseClientProvider>
+          {!isProductPage && !isAdminPage && <MatrixBackground />}
+          {children}
+          <Toaster />
+        </FirebaseClientProvider>
       </body>
     </html>
   );
