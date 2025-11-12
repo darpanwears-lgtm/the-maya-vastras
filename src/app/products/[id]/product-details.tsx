@@ -112,7 +112,7 @@ export default function ProductDetails({ product }: { product: Product }) {
           
           <p className="text-3xl font-bold text-primary">₹{product.price.toFixed(2)}</p>
           
-          <p className="text-muted-foreground leading-relaxed">{product.description}</p>
+          <p className="text-muted-foreground leading-relaxed bg-black/50 p-4 rounded-md">{product.description}</p>
           
           <div className="space-y-4">
             {product.colors && product.colors.length > 0 && (
