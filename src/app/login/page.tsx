@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Logo from "@/components/logo";
-import MatrixBackground from "@/components/matrix-background";
 import Header from "@/components/header";
 
 const GoogleIcon = () => (
@@ -14,7 +13,6 @@ const GoogleIcon = () => (
 export default function LoginPage() {
   return (
     <>
-      <MatrixBackground />
       <div className="relative z-10 flex min-h-screen flex-col">
         <Header />
         <main className="flex-1">

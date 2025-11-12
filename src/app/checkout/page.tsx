@@ -17,7 +17,6 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { CreditCard } from 'lucide-react';
-import MatrixBackground from '@/components/matrix-background';
 import Header from '@/components/header';
 
 const checkoutFormSchema = z.object({
@@ -65,7 +64,6 @@ export default function CheckoutPage() {
 
   return (
     <>
-    <MatrixBackground />
       <div className="relative z-10 flex min-h-screen flex-col">
         <Header />
         <main className="flex-1">

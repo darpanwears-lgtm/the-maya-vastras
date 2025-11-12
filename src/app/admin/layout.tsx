@@ -23,7 +23,6 @@ import {
 import Logo from '@/components/logo';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/header';
-import MatrixBackground from '@/components/matrix-background';
 
 export default function AdminLayout({
   children,
@@ -48,7 +47,6 @@ export default function AdminLayout({
 
   return (
     <>
-      <MatrixBackground />
       <div className="relative z-10">
         <Header />
         <SidebarProvider>

@@ -1,3 +1,6 @@
+
+'use client';
+
 import type { Metadata } from 'next';
 import './globals.css';
 import { Space_Grotesk, Cinzel_Decorative } from 'next/font/google';
@@ -5,6 +8,7 @@ import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
 import MatrixBackground from '@/components/matrix-background';
 import Header from '@/components/header';
+import { usePathname } from 'next/navigation';
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -17,16 +21,19 @@ const cinzelDecorative = Cinzel_Decorative({
   variable: '--font-cinzel-decorative',
 });
 
-export const metadata: Metadata = {
-  title: 'THE MAYA VASTRA',
-  description: 'A clothing brand with a Vedic, Indian, Maya, black and neon green, Matrix design theme.',
-};
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const pathname = usePathname();
+  const isProductPage = pathname.startsWith('/products/');
+
+  const metadata: Metadata = {
+    title: 'THE MAYA VASTRA',
+    description: 'A clothing brand with a Vedic, Indian, Maya, black and neon green, Matrix design theme.',
+  };
+
   return (
     <html lang="en" className="dark">
       <head>
@@ -44,6 +51,7 @@ export default function RootLayout({
           cinzelDecorative.variable
         )}
       >
+        {!isProductPage && <MatrixBackground />}
         {children}
         <Toaster />
       </body>

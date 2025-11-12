@@ -1,10 +1,12 @@
+
+'use client';
+
 import { products, upcomingLaunch } from '@/lib/data';
 import ProductCard from '@/components/product-card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import MatrixBackground from '@/components/matrix-background';
 import Header from '@/components/header';
 
 export default function Home() {
@@ -18,8 +20,6 @@ export default function Home() {
   const heroImage = PlaceHolderImages.find(img => img.id === 'hero_background_1');
 
   return (
-    <>
-      <MatrixBackground />
       <div className="relative z-10 flex min-h-screen flex-col">
         <Header />
         <main className="flex-1">
@@ -70,6 +70,5 @@ export default function Home() {
           </div>
         </main>
       </div>
-    </>
   );
 }
