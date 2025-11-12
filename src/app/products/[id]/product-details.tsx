@@ -54,8 +54,8 @@ export default function ProductDetails({ product }: { product: Product }) {
           Back
         </Button>
       </div>
-      <div className="grid md:grid-cols-2 gap-6 md:gap-10 items-start">
-        <div className="relative">
+      <div className="flex flex-col items-center gap-6 md:gap-8">
+        <div className="relative w-full max-w-lg">
           <Carousel 
              plugins={[plugin.current]}
              className="w-full"
@@ -113,7 +113,7 @@ export default function ProductDetails({ product }: { product: Product }) {
           </Carousel>
         </div>
         
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 w-full max-w-lg">
           <div>
             <Badge variant="outline" className="mb-2 border-primary text-primary">{product.garmentType}</Badge>
             <h1 className="text-3xl md:text-4xl font-bold font-headline">{product.name}</h1>
@@ -171,14 +171,14 @@ export default function ProductDetails({ product }: { product: Product }) {
 
           <div className="flex flex-col gap-4 mt-2">
             {user ? (
-              <Button size="lg" asChild className="w-full md:w-auto bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-[0_0_25px_5px_hsl(var(--primary)/0.4)] transition-shadow duration-300">
+              <Button size="lg" asChild className="w-full bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-[0_0_25px_5px_hsl(var(--primary)/0.4)] transition-shadow duration-300">
                 <Link href={checkoutUrl}>
                   {isUpcoming ? <Clock className="mr-2 h-5 w-5" /> : <CreditCard className="mr-2 h-5 w-5" />}
                   {isUpcoming ? 'Pre-Order Now' : 'Buy Now'}
                 </Link>
               </Button>
             ) : (
-              <Button size="lg" asChild className="w-full md:w-auto">
+              <Button size="lg" asChild className="w-full">
                  <Link href="/login">
                   Login to Purchase
                 </Link>
