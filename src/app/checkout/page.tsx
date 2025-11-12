@@ -22,6 +22,7 @@ import { useEffect, useTransition } from 'react';
 import { Product } from '@/lib/types';
 import { doc } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
+import { generateOrderEmailBody } from '@/ai/flows/send-order-email';
 
 const checkoutFormSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address.' }),
@@ -86,33 +87,52 @@ export default function CheckoutPage() {
 
 
   function onSubmit(data: CheckoutFormValues) {
-    if (!product) return;
-
-    startTransition(() => {
-      // The order data is assembled here.
-      const orderDetails = {
-        customer: data,
-        product: {
-          id: product.id,
-          name: product.name,
+    if (!product || !color || !size) return;
+  
+    startTransition(async () => {
+      try {
+        const fullAddress = `${data.address}, ${data.apartment || ''}\n${data.city}, ${data.state} - ${data.pincode}`;
+        const customerName = `${data.firstName} ${data.lastName}`;
+        
+        // Generate the email body using the Genkit flow
+        const emailContent = await generateOrderEmailBody({
+          customerName,
+          productName: product.name,
           price: product.price,
           color,
           size,
-        },
-        purchaseDate: new Date().toISOString(),
-      };
+          address: fullAddress,
+          email: data.email,
+          phone: data.phone,
+        });
 
-      // In a real application, you would now send this `orderDetails` object
-      // to a backend service (e.g., a serverless function) to send the email.
-      // For now, we will log it and show a success message.
-      console.log('Order Details for Email:', orderDetails);
-      
-      toast({
-        title: "Order Confirmed!",
-        description: "Your order details have been recorded. You will receive a confirmation email shortly.",
-      });
+        const recipient = 'gamingcloud3401@gmail.com';
+        const subject = `New Order for ${product.name}`;
+        
+        // Create the mailto link
+        const mailtoLink = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailContent.emailBody)}`;
 
-      router.push("/");
+        // Open the user's email client
+        window.location.href = mailtoLink;
+        
+        toast({
+          title: "Finalize Your Order",
+          description: "Your email client has been opened to send the order details. Please complete sending the email.",
+        });
+  
+        // Optional: Redirect after a delay to give the user time to see the toast.
+        setTimeout(() => {
+            router.push("/");
+        }, 3000);
+
+      } catch (error) {
+        console.error("Failed to process order:", error);
+        toast({
+          variant: "destructive",
+          title: "Order Failed",
+          description: "Could not prepare the order email at this time.",
+        });
+      }
     });
   }
 
@@ -281,7 +301,7 @@ export default function CheckoutPage() {
 
                     <Button type="submit" size="lg" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-[0_0_25px_5px_hsl(var(--primary)/0.4)] transition-shadow duration-300" disabled={isPending}>
                        {isPending ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <ShoppingBag className="mr-2 h-5 w-5" />}
-                      {isPending ? 'Placing Order...' : `Confirm Order (₹${product.price.toFixed(2)})`}
+                      {isPending ? 'Processing Order...' : `Confirm Order (₹${product.price.toFixed(2)})`}
                     </Button>
                   </form>
                 </Form>
