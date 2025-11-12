@@ -27,3 +27,9 @@ export type LaunchSchedule = {
   launchDateStart: Timestamp;
   launchDateEnd: Timestamp;
 }
+
+export type HeroSection = {
+  badgeText: string;
+  title: string;
+  description: string;
+}
