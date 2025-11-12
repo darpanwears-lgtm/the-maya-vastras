@@ -3,17 +3,44 @@
 
 import { cn } from '@/lib/utils';
 import Logo from './logo';
+import { useEffect, useState } from 'react';
 
-const WelcomeAnimation = ({ isVisible }: { isVisible: boolean }) => {
+const WelcomeAnimation = () => {
+  const [isVisible, setIsVisible] = useState(true);
+  const [isAnimationDone, setIsAnimationDone] = useState(false);
   const message = "WELCOME TO";
 
-  if (!isVisible) return null;
+  useEffect(() => {
+    const hasBeenShown = sessionStorage.getItem('welcomeAnimationShown');
+    if (hasBeenShown) {
+      setIsVisible(false);
+      return;
+    }
+
+    const visibilityTimer = setTimeout(() => {
+      setIsVisible(false);
+    }, 4000); // Fades out at 4s
+
+    const removalTimer = setTimeout(() => {
+      setIsAnimationDone(true);
+      sessionStorage.setItem('welcomeAnimationShown', 'true');
+    }, 5000); // Component removes itself at 5s
+
+    return () => {
+      clearTimeout(visibilityTimer);
+      clearTimeout(removalTimer);
+    };
+  }, []);
+
+  if (isAnimationDone) {
+    return null;
+  }
 
   return (
     <div
       className={cn(
         "fixed inset-0 z-[200] flex flex-col items-center justify-center bg-background transition-opacity duration-1000",
-        "animate-fade-out"
+        !isVisible && "opacity-0 pointer-events-none"
       )}
     >
         <div className="text-center p-8 z-10">
@@ -76,15 +103,6 @@ const WelcomeAnimation = ({ isVisible }: { isVisible: boolean }) => {
         .animate-logo-in {
             opacity: 0;
             animation: logoIn 1s ease-out forwards;
-        }
-
-        @keyframes fadeOut {
-          0% { opacity: 1; }
-          80% { opacity: 1; }
-          100% { opacity: 0; pointer-events: none; }
-        }
-        .animate-fade-out {
-          animation: fadeOut 5s ease-in-out forwards;
         }
 
         @keyframes gridFlash {

@@ -28,26 +28,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [showAnimation, setShowAnimation] = useState(true);
-
-  useEffect(() => {
-    // Check if the animation has already been shown in this session
-    const hasBeenShown = sessionStorage.getItem('welcomeAnimationShown');
-    if (hasBeenShown) {
-      setShowAnimation(false);
-      return;
-    }
-
-    // Hide animation after 5 seconds
-    const timer = setTimeout(() => {
-      setShowAnimation(false);
-      // Mark as shown for the current session
-      sessionStorage.setItem('welcomeAnimationShown', 'true');
-    }, 5000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
   const metadata: Metadata = {
     title: 'THE MAYA VASTRA',
     description: 'A clothing brand with a Vedic, Indian, Maya, black and neon green, Matrix design theme.',
@@ -71,7 +51,7 @@ export default function RootLayout({
           cinzelDecorative.variable
         )}
       >
-        <WelcomeAnimation isVisible={showAnimation} />
+        <WelcomeAnimation />
         <FirebaseClientProvider>
           <div className="flex min-h-screen flex-col">
             <div className="flex-grow">
