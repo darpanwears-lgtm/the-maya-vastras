@@ -47,14 +47,14 @@ export default function ProductDetails({ product }: { product: Product }) {
   const checkoutUrl = `/checkout?productId=${product.id}&color=${selectedColor}&size=${selectedSize}`;
 
   return (
-    <div className="container mx-auto px-4 py-8 md:py-12">
-      <div className="mb-8">
+    <div className="container mx-auto px-4 py-6 md:py-8">
+      <div className="mb-6">
         <Button variant="ghost" onClick={() => router.back()}>
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back
         </Button>
       </div>
-      <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-start">
+      <div className="grid md:grid-cols-2 gap-6 md:gap-10 items-start">
         <div className="relative">
           <Carousel 
              plugins={[plugin.current]}
@@ -113,20 +113,20 @@ export default function ProductDetails({ product }: { product: Product }) {
           </Carousel>
         </div>
         
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-4">
           <div>
             <Badge variant="outline" className="mb-2 border-primary text-primary">{product.garmentType}</Badge>
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold font-headline">{product.name}</h1>
+            <h1 className="text-3xl md:text-4xl font-bold font-headline">{product.name}</h1>
           </div>
           
-          <p className="text-3xl font-bold text-primary">₹{product.price.toFixed(2)}</p>
+          <p className="text-2xl font-bold text-primary">₹{product.price.toFixed(2)}</p>
           
           <p className="text-muted-foreground leading-relaxed bg-black/50 p-4 rounded-md">{product.description}</p>
           
           <div className="space-y-4">
             {product.colors && product.colors.length > 0 && (
               <div>
-                <h3 className="font-semibold mb-3">Select Color: <span className="text-primary font-bold">{selectedColor}</span></h3>
+                <h3 className="font-semibold mb-2">Select Color: <span className="text-primary font-bold">{selectedColor}</span></h3>
                 <RadioGroup 
                   value={selectedColor} 
                   onValueChange={setSelectedColor}
@@ -148,7 +148,7 @@ export default function ProductDetails({ product }: { product: Product }) {
 
             {product.sizes && product.sizes.length > 0 && (
                <div>
-                <h3 className="font-semibold mb-3">Select Size: <span className="text-primary font-bold">{selectedSize}</span></h3>
+                <h3 className="font-semibold mb-2">Select Size: <span className="text-primary font-bold">{selectedSize}</span></h3>
                 <RadioGroup 
                   value={selectedSize}
                   onValueChange={setSelectedSize}
@@ -169,7 +169,7 @@ export default function ProductDetails({ product }: { product: Product }) {
             )}
           </div>
 
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 mt-2">
             {user ? (
               <Button size="lg" asChild className="w-full md:w-auto bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-[0_0_25px_5px_hsl(var(--primary)/0.4)] transition-shadow duration-300">
                 <Link href={checkoutUrl}>
