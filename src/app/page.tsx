@@ -45,7 +45,7 @@ export default function Home() {
                 <Badge variant="outline" className="mb-4 border-primary text-primary text-sm py-1 px-4 bg-background/50">
                   {upcomingLaunch.date}
                 </Badge>
-                <h1 className="text-5xl md:text-7xl font-bold font-headline tracking-tighter mb-4 text-transparent bg-clip-text bg-gradient-to-r from-primary via-purple-400 to-primary [text-shadow:0_0_20px_hsl(var(--primary)/0.8)]">
+                <h1 className="text-5xl md:text-7xl font-bold font-headline tracking-tighter mb-4 text-white">
                   {upcomingLaunch.name}
                 </h1>
                 <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
