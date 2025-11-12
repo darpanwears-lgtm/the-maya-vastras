@@ -1,4 +1,3 @@
-
 'use client';
 
 import { upcomingLaunch as staticLaunchData } from '@/lib/data';
@@ -52,7 +51,9 @@ export default function Home() {
     return products
       ?.filter(p => { // First, filter by availability
         if (!p.launchDateEnd) return true;
-        return p.launchDateEnd.toDate() > new Date();
+        const now = new Date();
+        const endDate = p.launchDateEnd.toDate();
+        return endDate > now;
       })
       .filter(p => { // Then, filter by category
         if (selectedCategory === 'All') return true;
@@ -84,7 +85,10 @@ export default function Home() {
         <Header />
         <main className="flex-1">
           <div className="container mx-auto px-4 py-8">
-            <section className="relative text-center my-8 py-12 md:my-16 md:py-20 rounded-lg overflow-hidden">
+            <section className="text-center my-8">
+              <p className="text-muted-foreground italic">"The veil of Maya is thin here. Look closer."</p>
+            </section>
+            <section className="relative text-center mb-8 py-12 md:mb-16 md:py-20 rounded-lg overflow-hidden">
               <MatrixBackground />
               <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-background to-transparent z-[5]"></div>
               <div className="relative z-20">
