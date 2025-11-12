@@ -21,8 +21,8 @@ const ProductCard = ({ product }: ProductCardProps) => {
                 src={imageUrl}
                 alt={product.name}
                 width={600}
-                height={800}
-                className="object-cover w-full h-auto aspect-[3/4] transition-transform duration-500 group-hover:scale-105"
+                height={600}
+                className="object-cover w-full h-auto aspect-square transition-transform duration-500 group-hover:scale-105"
                 data-ai-hint="fashion product"
               />
           </div>

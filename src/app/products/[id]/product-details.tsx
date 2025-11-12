@@ -80,8 +80,8 @@ export default function ProductDetails({ product }: { product: Product }) {
                                   src={image.url}
                                   alt={`${product.name} - image ${index + 1}`}
                                   width={800}
-                                  height={1067}
-                                  className="object-cover w-full h-full aspect-[3/4]"
+                                  height={800}
+                                  className="object-cover w-full h-full aspect-square"
                                   data-ai-hint="fashion product"
                                 />
                               </div>
@@ -91,7 +91,7 @@ export default function ProductDetails({ product }: { product: Product }) {
                                   src={image.url}
                                   alt={`${product.name} - image ${index + 1}`}
                                   width={1200}
-                                  height={1600}
+                                  height={1200}
                                   className="object-contain w-full h-auto rounded-lg"
                                 />
                             </DialogContent>
@@ -101,11 +101,11 @@ export default function ProductDetails({ product }: { product: Product }) {
                       <CarouselItem>
                         <div className="overflow-hidden rounded-lg shadow-lg shadow-primary/10">
                           <Image
-                            src='https://placehold.co/800x1067'
+                            src='https://placehold.co/800x800'
                             alt={product.name}
                             width={800}
-                            height={1067}
-                            className="object-cover w-full h-full aspect-[3/4]"
+                            height={800}
+                            className="object-cover w-full h-full aspect-square"
                             data-ai-hint="fashion product"
                           />
                         </div>
