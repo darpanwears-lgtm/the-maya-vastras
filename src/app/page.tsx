@@ -10,7 +10,7 @@ import { collection, query, where, Timestamp, doc } from 'firebase/firestore';
 import type { Product, HeroSection } from '@/lib/types';
 import { Loader2, Search, ListFilter } from 'lucide-react';
 import Link from 'next/link';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import { Input } from '@/components/ui/input';
 import {
   DropdownMenu,
@@ -20,13 +20,26 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import MatrixBackground from '@/components/matrix-background';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
+import Image from 'next/image';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
+import Autoplay from "embla-carousel-autoplay"
+
 
 export default function Home() {
   const { firestore } = useFirebase();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const plugin = useRef(Autoplay({ delay: 3000, stopOnInteraction: true }));
+  const carouselImages = PlaceHolderImages.filter(img => img.id.startsWith('carousel_'));
 
   // Product Data Fetching
   const productsQuery = useMemoFirebase(() => {
@@ -116,6 +129,40 @@ export default function Home() {
                   <Link href="/upcoming">Early Access</Link>
                 </Button>
               </div>
+            </section>
+
+             <section className="relative mb-16 rounded-lg overflow-hidden border border-border/20">
+                <div className="absolute inset-0">
+                    <MatrixBackground />
+                </div>
+                 <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-black/50 to-black/80 z-[5]"></div>
+                <div className="relative z-10 p-4 md:p-8">
+                    <Carousel
+                      plugins={[plugin.current]}
+                      className="w-full max-w-3xl mx-auto"
+                      onMouseEnter={plugin.current.stop}
+                      onMouseLeave={plugin.current.reset}
+                    >
+                      <CarouselContent>
+                        {carouselImages.map((image) => (
+                          <CarouselItem key={image.id}>
+                            <div className="overflow-hidden rounded-md shadow-lg shadow-primary/10">
+                              <Image
+                                src={image.imageUrl}
+                                alt={image.description}
+                                width={1200}
+                                height={675}
+                                className="object-cover w-full h-auto aspect-video"
+                                data-ai-hint={image.imageHint}
+                              />
+                            </div>
+                          </CarouselItem>
+                        ))}
+                      </CarouselContent>
+                      <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 z-10 hidden md:flex" />
+                      <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 z-10 hidden md:flex" />
+                    </Carousel>
+                </div>
             </section>
 
             {isLoadingProducts ? (

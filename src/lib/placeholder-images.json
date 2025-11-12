@@ -41,6 +41,24 @@
       "description": "Abstract vedic and mayan inspired art for hero background",
       "imageUrl": "https://images.unsplash.com/photo-1698422634311-54a43463375b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxhYnN0cmFjdCUyMHZlZGljfGVufDB8fHx8MTc2NDUzOTY2NXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "abstract vedic"
+    },
+    {
+      "id": "carousel_img_1",
+      "description": "Fashion model wearing futuristic neon clothing",
+      "imageUrl": "https://images.unsplash.com/photo-1695271810419-35a0833a6774?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxuZW9uJTIwZ3JlZW4lMjBmYXNoaW9ufGVufDB8fHx8MTc2NDU0NTQ0N3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "neon fashion"
+    },
+    {
+      "id": "carousel_img_2",
+      "description": "Close up of a jacket with Mayan-inspired patterns",
+      "imageUrl": "https://images.unsplash.com/photo-1719940149959-1e3a1b0a8f8e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMXx8bWF5YW4lMjBwYXR0ZXJuJTIwZmFzaGlvbnxlbnwwfHx8fDE3NjQ1NDU1MDF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "mayan fashion"
+    },
+    {
+      "id": "carousel_img_3",
+      "description": "Model in a dark room with neon green light accents on clothes",
+      "imageUrl": "https://images.unsplash.com/photo-1549421535-5c1284a22e83?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxuZW9uJTIwZ3JlZW4lMjBsaWdodCUyMGZhc2hpb258ZW58MHx8fHwxNzY0NTQ1NTU4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "neon light"
     }
   ]
 }
