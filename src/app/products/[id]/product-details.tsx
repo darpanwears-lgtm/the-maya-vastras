@@ -1,3 +1,4 @@
+
 'use client';
 import type { Product } from '@/lib/types';
 import Image from 'next/image';
@@ -17,6 +18,11 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel"
 import Autoplay from "embla-carousel-autoplay"
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 
 
 export default function ProductDetails({ product }: { product: Product }) {
@@ -24,7 +30,7 @@ export default function ProductDetails({ product }: { product: Product }) {
   const [selectedSize, setSelectedSize] = useState(product.sizes?.[0] || '');
   const { user } = useUser();
   const plugin = useRef(
-    Autoplay({ delay: 7000, stopOnInteraction: true })
+    Autoplay({ delay: 5000, stopOnInteraction: true })
   )
 
   const checkoutUrl = `/checkout?productId=${product.id}&color=${selectedColor}&size=${selectedSize}`;
@@ -42,16 +48,29 @@ export default function ProductDetails({ product }: { product: Product }) {
             <CarouselContent>
               {product.images.length > 0 ? product.images.map((image, index) => (
                 <CarouselItem key={index}>
-                  <div className="overflow-hidden rounded-lg shadow-lg shadow-primary/10">
-                    <Image
-                      src={image.url}
-                      alt={`${product.name} - image ${index + 1}`}
-                      width={800}
-                      height={1067}
-                      className="object-cover w-full h-full aspect-[3/4]"
-                      data-ai-hint="fashion product"
-                    />
-                  </div>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <div className="overflow-hidden rounded-lg shadow-lg shadow-primary/10 cursor-zoom-in">
+                          <Image
+                            src={image.url}
+                            alt={`${product.name} - image ${index + 1}`}
+                            width={800}
+                            height={1067}
+                            className="object-cover w-full h-full aspect-[3/4]"
+                            data-ai-hint="fashion product"
+                          />
+                        </div>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-4xl p-0 bg-transparent border-0">
+                         <Image
+                            src={image.url}
+                            alt={`${product.name} - image ${index + 1}`}
+                            width={1200}
+                            height={1600}
+                            className="object-contain w-full h-auto rounded-lg"
+                          />
+                      </DialogContent>
+                    </Dialog>
                 </CarouselItem>
               )) : (
                  <CarouselItem>
