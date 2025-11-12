@@ -1,3 +1,40 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "prod_001_img_1",
+      "description": "Front view of the Cosmic Chakra T-Shirt",
+      "imageUrl": "https://images.unsplash.com/photo-1628068311627-0f5abce65050?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHx0c2hpcnQlMjBmYXNoaW9ufGVufDB8fHx8MTc2Mjg5MzQ2N3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "tshirt fashion"
+    },
+    {
+      "id": "prod_002_img_1",
+      "description": "Front view of the Matrix Mandala Hoodie",
+      "imageUrl": "https://images.unsplash.com/photo-1688111421205-a0a85415b224?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxob29kaWUlMjBmYXNoaW9ufGVufDB8fHx8MTc2MjkzMTQwMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "hoodie fashion"
+    },
+    {
+      "id": "prod_003_img_1",
+      "description": "Front view of the Neon Nataraja Sweatpants",
+      "imageUrl": "https://images.unsplash.com/photo-1758221105152-272f3b257c1d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxzd2VhdHBhbnRzJTIwZmFzaGlvbnxlbnwwfHx8fDE3NjI5MzE0MDF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "sweatpants fashion"
+    },
+    {
+      "id": "prod_004_img_1",
+      "description": "Front view of the Yantra Glitch Jacket",
+      "imageUrl": "https://images.unsplash.com/photo-1617032869698-583c00770254?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxqYWNrZXQlMjBmYXNoaW9ufGVufDB8fHx8MTc2MjkzMTQwMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "jacket fashion"
+    },
+    {
+      "id": "prod_005_img_1",
+      "description": "Front view of the Vedic Glitch T-Shirt",
+      "imageUrl": "https://images.unsplash.com/photo-1747094600551-25d1cdddd46c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHx0c2hpcnQlMjBkYXJrfGVufDB8fHx8MTc2MjkzMTQwMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "tshirt dark"
+    },
+    {
+      "id": "prod_006_img_1",
+      "description": "Front view of the Maya Code Hoodie",
+      "imageUrl": "https://images.unsplash.com/photo-1727529164740-e12cd3451f06?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxob29kaWUlMjBkYXJrfGVufDB8fHx8MTc2MjkzMTQwMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "hoodie dark"
+    }
+  ]
 }
