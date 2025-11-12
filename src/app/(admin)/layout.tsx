@@ -124,20 +124,27 @@ export default function AdminLayout({
   const { user, isUserLoading } = useUser();
 
   const adminRoleRef = useMemoFirebase(() => {
+    // Only create the reference if we have a definite user ID.
     if (!firestore || !user?.uid) return null;
     return doc(firestore, `roles_admin/${user.uid}`);
   }, [firestore, user?.uid]);
 
+  // isUserLoading is true until the auth state is known.
+  // We should wait for that before trusting the `user` object.
   const { data: adminRole, isLoading: isAdminRoleLoading } = useDoc(adminRoleRef);
   
-  const isLoading = isUserLoading || (user && isAdminRoleLoading);
-  const isAdmin = !!adminRole;
+  // The overall loading state depends on both user auth and the admin role check.
+  const isLoading = isUserLoading || isAdminRoleLoading;
+  
+  // We can only determine admin status if we are not loading and have a user.
+  const isAdmin = !isUserLoading && !!user && !!adminRole;
 
   React.useEffect(() => {
-    if (!isLoading && !user) {
+    // If we're done loading and there's no user, redirect to login.
+    if (!isUserLoading && !user) {
       router.push('/login');
     }
-  }, [user, isLoading, router]);
+  }, [user, isUserLoading, router]);
 
   return (
     <>
@@ -151,12 +158,12 @@ export default function AdminLayout({
                 <span>Authenticating & Verifying Access...</span>
             </div>
           </div>
-        ) : user && isAdmin ? (
+        ) : isAdmin ? (
           <AdminContent>{children}</AdminContent>
         ) : (
-            <div className="flex flex-col items-center justify-center h-[calc(100vh-theme(spacing.14))]">
+            <div className="flex flex-col items-center justify-center h-[calc(100vh-theme(spacing.14))] text-center p-4">
                 <h1 className="text-2xl font-bold mb-4">Access Denied</h1>
-                <p className="text-muted-foreground mb-8">You do not have permission to view this page.</p>
+                <p className="text-muted-foreground mb-8 max-w-md">You do not have permission to view this page. Ensure you are logged in with an admin account.</p>
                 <Button asChild>
                     <Link href="/">Return to Homepage</Link>
                 </Button>
