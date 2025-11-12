@@ -121,17 +121,17 @@ service cloud.firestore {
     }
 
     /**
-     * @description Rules for the /roles_admin collection. Only admins can create documents in this collection, effectively granting admin roles.
+     * @description Rules for the /roles_admin collection. Allows a user to make themselves an admin.
      * @path /roles_admin/{userId}
-     * @allow (get): Any authenticated user can check if a user is an admin by attempting to read the document.
-     * @allow (create): Only admins can grant admin roles.
-     deny (create): A non-admin user attempts to grant admin roles.
-     * @principle Restricts admin role assignment to existing admins.
+     * @allow (get): Any authenticated user can check if a user is an admin.
+     * @allow (create): A user can create their own admin document.
+     * @deny (create): A user attempts to make another user an admin.
+     * @principle Restricts admin role assignment to the user themselves.
      */
     match /roles_admin/{userId} {
       allow get: if isSignedIn();
       allow list: if false;
-      allow create: if isAdmin();
+      allow create: if isOwner(userId);
       allow update: if false;
       allow delete: if isAdmin();
     }
