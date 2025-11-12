@@ -15,8 +15,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
-import { CreditCard } from 'lucide-react';
+import { ShoppingBag } from 'lucide-react';
 import Header from '@/components/header';
 
 const checkoutFormSchema = z.object({
@@ -29,10 +28,6 @@ const checkoutFormSchema = z.object({
   state: z.string().min(1, { message: 'State is required.' }),
   pincode: z.string().min(6, { message: 'PIN code must be at least 6 digits.' }),
   phone: z.string().min(10, { message: 'Please enter a valid phone number.' }),
-  cardName: z.string().min(1, "Name on card is required."),
-  cardNumber: z.string().min(16, "Card number must be 16 digits.").max(16),
-  cardExpiry: z.string().regex(/^(0[1-9]|1[0-2])\/\d{2}$/, "Expiry must be in MM/YY format."),
-  cardCvc: z.string().min(3, "CVC must be 3 digits.").max(4),
 });
 
 type CheckoutFormValues = z.infer<typeof checkoutFormSchema>;
@@ -50,10 +45,6 @@ export default function CheckoutPage() {
       state: '',
       pincode: '',
       phone: '',
-      cardName: '',
-      cardNumber: '',
-      cardExpiry: '',
-      cardCvc: '',
     },
   });
 
@@ -71,7 +62,7 @@ export default function CheckoutPage() {
             <Card className="max-w-2xl mx-auto border-border/50 bg-card/50">
               <CardHeader>
                 <CardTitle className="text-3xl font-headline">Checkout</CardTitle>
-                <CardDescription>Enter your shipping and payment information to complete your order.</CardDescription>
+                <CardDescription>Enter your shipping information to complete your order.</CardDescription>
               </CardHeader>
               <CardContent>
                 <Form {...form}>
@@ -204,71 +195,10 @@ export default function CheckoutPage() {
                         )}
                       />
                     </div>
-                    
-                    <Separator />
-
-                    <div className="space-y-4">
-                      <h3 className="text-xl font-semibold font-headline">Payment Method</h3>
-                      <p className="text-sm text-muted-foreground">All transactions are secure. We only accept online payments.</p>
-                       <FormField
-                        control={form.control}
-                        name="cardName"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Name on Card</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Thomas A. Anderson" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="cardNumber"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Card Number</FormLabel>
-                            <FormControl>
-                              <Input placeholder="0000 0000 0000 0000" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <div className="grid grid-cols-2 gap-4">
-                         <FormField
-                          control={form.control}
-                          name="cardExpiry"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Expiration (MM/YY)</FormLabel>
-                              <FormControl>
-                                <Input placeholder="03/25" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                         <FormField
-                          control={form.control}
-                          name="cardCvc"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>CVC</FormLabel>
-                              <FormControl>
-                                <Input placeholder="123" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                    </div>
 
                     <Button type="submit" size="lg" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-[0_0_25px_5px_hsl(var(--primary)/0.4)] transition-shadow duration-300">
-                      <CreditCard className="mr-2 h-5 w-5" />
-                      Place Order
+                      <ShoppingBag className="mr-2 h-5 w-5" />
+                      Confirm Order
                     </Button>
                   </form>
                 </Form>
