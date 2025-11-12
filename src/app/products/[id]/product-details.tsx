@@ -6,10 +6,11 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
-import { CreditCard, ShieldCheck } from 'lucide-react';
+import { CreditCard, ShieldCheck, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useRef } from 'react';
 import { useUser } from '@/firebase';
+import { useRouter } from 'next/navigation';
 import {
   Carousel,
   CarouselContent,
@@ -26,6 +27,7 @@ import {
 
 
 export default function ProductDetails({ product }: { product: Product }) {
+  const router = useRouter();
   const [selectedColor, setSelectedColor] = useState(product.colors?.[0] || '');
   const [selectedSize, setSelectedSize] = useState(product.sizes?.[0] || '');
   const { user } = useUser();
@@ -37,6 +39,12 @@ export default function ProductDetails({ product }: { product: Product }) {
 
   return (
     <div className="container mx-auto px-4 py-12">
+      <div className="mb-8">
+        <Button variant="ghost" onClick={() => router.back()}>
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back to products
+        </Button>
+      </div>
       <div className="grid md:grid-cols-2 gap-12 items-start">
         <div className="relative">
           <Carousel 
