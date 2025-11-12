@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -11,7 +12,7 @@ export default function AdminDashboard() {
         <CardHeader>
           <CardTitle>Welcome to the THE MAYA VASTRA Admin Panel</CardTitle>
           <CardDescription>
-            This is your control center. Manage products, view orders, and configure your store's launch settings.
+            This is your control center. Manage products and configure your store's launch settings.
           </CardDescription>
         </CardHeader>
         <CardContent>

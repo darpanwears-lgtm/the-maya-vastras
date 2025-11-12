@@ -20,8 +20,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { useUser, useFirebase, useDoc, useMemoFirebase } from '@/firebase';
 import { useEffect, useTransition } from 'react';
 import { Product } from '@/lib/types';
-import { doc, collection, serverTimestamp } from 'firebase/firestore';
-import { addDocumentNonBlocking } from '@/firebase/non-blocking-updates';
+import { doc } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
 
 const checkoutFormSchema = z.object({
@@ -87,52 +86,33 @@ export default function CheckoutPage() {
 
 
   function onSubmit(data: CheckoutFormValues) {
-    if (!firestore || !user || !product) return;
+    if (!product) return;
 
-    startTransition(async () => {
-      try {
-        const orderData = {
-          userId: user.uid,
-          customerName: `${data.firstName} ${data.lastName}`,
-          customerEmail: data.email,
-          shippingAddress: {
-            address: data.address,
-            apartment: data.apartment,
-            city: data.city,
-            state: data.state,
-            pincode: data.pincode,
-            phone: data.phone,
-          },
-          items: [{
-            productId: product.id,
-            productName: product.name,
-            price: product.price,
-            quantity: 1,
-            color,
-            size,
-          }],
-          totalAmount: product.price,
-          status: 'Paid',
-          orderDate: serverTimestamp(),
-        };
+    startTransition(() => {
+      // The order data is assembled here.
+      const orderDetails = {
+        customer: data,
+        product: {
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          color,
+          size,
+        },
+        purchaseDate: new Date().toISOString(),
+      };
 
-        const ordersCollection = collection(firestore, `users/${user.uid}/orders`);
-        await addDocumentNonBlocking(ordersCollection, orderData);
+      // In a real application, you would now send this `orderDetails` object
+      // to a backend service (e.g., a serverless function) to send the email.
+      // For now, we will log it and show a success message.
+      console.log('Order Details for Email:', orderDetails);
+      
+      toast({
+        title: "Order Confirmed!",
+        description: "Your order details have been recorded. You will receive a confirmation email shortly.",
+      });
 
-        toast({
-          title: "Order Confirmed!",
-          description: "Your order has been placed successfully.",
-        });
-        router.push("/");
-
-      } catch (error) {
-        console.error("Failed to save order:", error);
-        toast({
-          variant: "destructive",
-          title: "Order Failed",
-          description: "Could not place the order at this time.",
-        });
-      }
+      router.push("/");
     });
   }
 

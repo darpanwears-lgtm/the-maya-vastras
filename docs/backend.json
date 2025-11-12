@@ -97,47 +97,6 @@
         "displayName"
       ]
     },
-    "Order": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "Order",
-      "type": "object",
-      "description": "Represents a customer order.",
-      "properties": {
-        "id": {
-          "type": "string",
-          "description": "Unique identifier for the order entity."
-        },
-        "userId": {
-          "type": "string",
-          "description": "Reference to User. (Relationship: User 1:N Order)"
-        },
-        "productId": {
-          "type": "string",
-          "description": "Reference to Product. (Relationship: Product 1:N Order)"
-        },
-        "orderDate": {
-          "type": "string",
-          "description": "Date the order was placed.",
-          "format": "date-time"
-        },
-        "quantity": {
-          "type": "number",
-          "description": "Quantity of the product ordered."
-        },
-        "totalAmount": {
-          "type": "number",
-          "description": "Total amount for the order."
-        }
-      },
-      "required": [
-        "id",
-        "userId",
-        "productId",
-        "orderDate",
-        "quantity",
-        "totalAmount"
-      ]
-    },
     "LaunchSchedule": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "LaunchSchedule",
@@ -218,26 +177,6 @@
         }
       },
       {
-        "path": "/users/{userId}/orders/{orderId}",
-        "definition": {
-          "entityName": "Order",
-          "schema": {
-            "$ref": "#/backend/entities/Order"
-          },
-          "description": "Stores order information for a specific user. Enforces path-based ownership.",
-          "params": [
-            {
-              "name": "userId",
-              "description": "The unique identifier of the user who placed the order."
-            },
-            {
-              "name": "orderId",
-              "description": "The unique identifier of the order."
-            }
-          ]
-        }
-      },
-      {
         "path": "/roles_admin/{userId}",
         "definition": {
           "entityName": "User",
@@ -254,6 +193,6 @@
         }
       }
     ],
-    "reasoning": "This Firestore structure is designed to support VedicVerse's clothing brand application, focusing on product management, scheduled launches, user authentication, and order tracking. It prioritizes authorization independence, clarity, and scalability.\n\n*   **Products Collection:** Stores product details. The `products` collection is flat and requires no authorization checks based on parent documents.\n*   **Launch Schedules Collection:**  Allows administrators to pre-define launch schedules.\n*   **Users Collection:** Stores user profiles.  Each user document is secured based on `request.auth.uid` matching the `userId`.\n*   **Orders Collection:**  Stores order information, associated with a user.  Orders are placed under the `users/{userId}/orders/{orderId}` collection structure. This enforces path-based ownership, ensuring only the user or an admin can access their orders.\n*   **Admin Roles Collection:** Implements Database-Based Access Control (DBAC).  Presence in `/roles_admin/{uid}` grants admin privileges.\n\n**Authorization Independence:**\n\n*   The design avoids hierarchical authorization dependencies by denormalizing authorization data where needed. For example, the orders subcollection inherently ties the order to the user, providing authorization context without needing to read the parent user document.\n\n**QAPs (Rules are not Filters):**\n\n*   The segregation of concerns into separate collections allows for more secure `list` operations. For example, listing products doesn't require filtering based on user roles; all products in the `products` collection are accessible (subject to other rules).\n*   Path-based ownership in `/users/{userId}/orders/{orderId}` prevents unauthorized listing of orders.\n\n**Future Considerations:**\n\n*   Consider adding a `status` field to the `Product` entity (e.g., `DRAFT`, `ACTIVE`, `INACTIVE`) for better state management and filtering."
+    "reasoning": "This Firestore structure is designed to support VedicVerse's clothing brand application, focusing on product management, scheduled launches, and user authentication. It prioritizes authorization independence, clarity, and scalability.\n\n*   **Products Collection:** Stores product details. The `products` collection is flat and requires no authorization checks based on parent documents.\n*   **Launch Schedules Collection:**  Allows administrators to pre-define launch schedules.\n*   **Users Collection:** Stores user profiles.  Each user document is secured based on `request.auth.uid` matching the `userId`.\n*   **Admin Roles Collection:** Implements Database-Based Access Control (DBAC).  Presence in `/roles_admin/{uid}` grants admin privileges.\n\n**Authorization Independence:**\n\n*   The design avoids hierarchical authorization dependencies.\n\n**QAPs (Rules are not Filters):**\n\n*   The segregation of concerns into separate collections allows for more secure `list` operations. For example, listing products doesn't require filtering based on user roles; all products in the `products` collection are accessible (subject to other rules).\n\n**Future Considerations:**\n\n*   Consider adding a `status` field to the `Product` entity (e.g., `DRAFT`, `ACTIVE`, `INACTIVE`) for better state management and filtering."
   }
 }
