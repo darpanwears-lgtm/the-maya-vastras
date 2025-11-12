@@ -206,9 +206,9 @@ export function ProductForm() {
             name="price"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Price ($)</FormLabel>
+                <FormLabel>Price (₹)</FormLabel>
                 <FormControl>
-                  <Input type="number" placeholder="e.g., 45.00" {...field} />
+                  <Input type="number" placeholder="e.g., 3500.00" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

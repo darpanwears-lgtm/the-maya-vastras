@@ -32,7 +32,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         </CardHeader>
         <CardContent className="p-4 flex-grow">
           <CardTitle className="font-headline text-lg tracking-normal">{product.name}</CardTitle>
-          <p className="text-primary font-bold text-xl mt-2">${product.price.toFixed(2)}</p>
+          <p className="text-primary font-bold text-xl mt-2">₹{product.price.toFixed(2)}</p>
         </CardContent>
       </Link>
       <CardFooter className="p-4 pt-0 mt-auto">

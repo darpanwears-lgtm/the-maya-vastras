@@ -53,7 +53,7 @@ export default function AdminProductsPage() {
                   return (
                     <TableRow key={product.id}>
                       <TableCell className="font-medium">{product.name}</TableCell>
-                      <TableCell>${product.price.toFixed(2)}</TableCell>
+                      <TableCell>₹{product.price.toFixed(2)}</TableCell>
                       <TableCell>
                         <Badge variant={status.variant}>{status.text}</Badge>
                       </TableCell>

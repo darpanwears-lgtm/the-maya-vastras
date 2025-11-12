@@ -40,7 +40,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
             <h1 className="text-4xl lg:text-5xl font-bold">{product.name}</h1>
           </div>
           
-          <p className="text-3xl font-bold text-primary">${product.price.toFixed(2)}</p>
+          <p className="text-3xl font-bold text-primary">₹{product.price.toFixed(2)}</p>
           
           <p className="text-muted-foreground leading-relaxed">{product.description}</p>
           
