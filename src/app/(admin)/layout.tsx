@@ -39,7 +39,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
-  const { areServicesAvailable, firestore, user, isUserLoading } = useFirebase();
+  const { firestore, user, isUserLoading } = useFirebase();
 
   const adminRoleRef = useMemoFirebase(() => {
     if (!firestore || !user) return null;
@@ -48,7 +48,7 @@ export default function AdminLayout({
 
   const { data: adminRole, isLoading: isAdminRoleLoading } = useDoc(adminRoleRef);
   const isAdmin = !!adminRole;
-  const isLoading = !areServicesAvailable || isUserLoading || isAdminRoleLoading;
+  const isLoading = isUserLoading || isAdminRoleLoading;
   
   React.useEffect(() => {
     if (!isLoading && !user) {
