@@ -10,12 +10,14 @@ import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import UnlockingAnimation from '@/components/unlocking-animation';
 
 export default function UpcomingPage() {
   const { firestore } = useFirebase();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isUnlocking, setIsUnlocking] = useState(false);
 
   const launchScheduleRef = useMemoFirebase(() => {
     if (!firestore) return null;
@@ -38,8 +40,12 @@ export default function UpcomingPage() {
   const handlePasswordSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (launchSchedule && password === launchSchedule.accessCode) {
-      setIsAuthenticated(true);
       setError('');
+      setIsUnlocking(true);
+      setTimeout(() => {
+        setIsAuthenticated(true);
+        setIsUnlocking(false);
+      }, 2500);
     } else {
       setError('Incorrect password. Please try again.');
     }
@@ -57,6 +63,14 @@ export default function UpcomingPage() {
           </div>
         </section>
       );
+    }
+
+    if (isUnlocking) {
+      return (
+        <section className="flex justify-center items-center py-20">
+          <UnlockingAnimation />
+        </section>
+      )
     }
     
     if (!isAuthenticated) {
