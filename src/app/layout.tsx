@@ -47,7 +47,7 @@ export default function RootLayout({
         <MatrixBackground />
         <div className="relative z-10 flex min-h-screen flex-col bg-background/80 backdrop-blur-sm">
           <Header />
-          <main className="flex-1">{children}</main>
+          <main className="flex-1 overflow-y-auto">{children}</main>
         </div>
         <Toaster />
       </body>
