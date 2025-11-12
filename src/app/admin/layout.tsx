@@ -10,6 +10,7 @@ import {
   Settings,
   PanelLeft,
   PackagePlus,
+  ArrowLeft,
 } from 'lucide-react';
 import {
   SidebarProvider,
@@ -22,11 +23,13 @@ import {
   SidebarFooter,
   SidebarTrigger,
   SidebarInset,
+  SidebarSeparator,
 } from '@/components/ui/sidebar';
 import Logo from '@/components/logo';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/header';
 import { usePathname } from 'next/navigation';
+import MatrixBackground from '@/components/matrix-background';
 
 export default function AdminLayout({
   children,
@@ -53,6 +56,7 @@ export default function AdminLayout({
 
   return (
     <>
+      <MatrixBackground />
       <div className="relative z-10">
         {!isLoginPage && <Header />}
         <SidebarProvider>
@@ -95,6 +99,15 @@ export default function AdminLayout({
                       <Link href="/admin/settings">
                         <Settings />
                         <span>Settings</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarSeparator />
+                   <SidebarMenuItem>
+                    <SidebarMenuButton href="/" asChild>
+                      <Link href="/">
+                        <ArrowLeft />
+                        <span>Back to Home</span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
