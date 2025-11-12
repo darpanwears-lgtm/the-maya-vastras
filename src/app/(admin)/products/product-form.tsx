@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useForm, useFieldArray } from "react-hook-form";
@@ -22,7 +23,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Sparkles, PlusCircle, Trash2 } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { CalendarIcon, Sparkles, PlusCircle, Trash2 } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
 import { generateProductDescription } from "@/ai/flows/generate-product-description";
 import { useToast } from "@/hooks/use-toast";
 import { useState, useTransition } from "react";
@@ -41,6 +46,10 @@ const productFormSchema = z.object({
   images: z.array(z.object({ url: z.string().url("Please enter a valid URL.") })).min(1, "Please add at least one image."),
   colors: z.string().min(1, "Please enter at least one color."),
   sizes: z.string().min(1, "Please enter at least one size."),
+  launchDate: z.object({
+    from: z.date({ required_error: "A start date is required."}),
+    to: z.date({ required_error: "An end date is required."}),
+  }),
 });
 
 type ProductFormValues = z.infer<typeof productFormSchema>;
@@ -63,6 +72,10 @@ export function ProductForm() {
       images: [{ url: "" }],
       colors: "",
       sizes: "",
+      launchDate: {
+        from: undefined,
+        to: undefined,
+      },
     },
   });
 
@@ -78,6 +91,8 @@ export function ProductForm() {
       try {
         const productData = {
           ...data,
+          launchDateStart: data.launchDate.from,
+          launchDateEnd: data.launchDate.to,
           colors: data.colors.split(',').map(s => s.trim()),
           sizes: data.sizes.split(',').map(s => s.trim()),
         };
@@ -313,7 +328,8 @@ export function ProductForm() {
             />
         </div>
         
-        <FormField
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <FormField
             control={form.control}
             name="price"
             render={({ field }) => (
@@ -326,6 +342,55 @@ export function ProductForm() {
               </FormItem>
             )}
           />
+
+          <FormField
+            control={form.control}
+            name="launchDate"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <FormLabel>Launch Date Window</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "w-full justify-start text-left font-normal",
+                          !field.value?.from && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {field.value?.from ? (
+                          field.value.to ? (
+                            <>
+                              {format(field.value.from, "LLL dd, y")} -{" "}
+                              {format(field.value.to, "LLL dd, y")}
+                            </>
+                          ) : (
+                            format(field.value.from, "LLL dd, y")
+                          )
+                        ) : (
+                          <span>Pick a date range</span>
+                        )}
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      initialFocus
+                      mode="range"
+                      defaultMonth={field.value?.from}
+                      selected={{from: field.value?.from, to: field.value?.to}}
+                      onSelect={field.onChange}
+                      numberOfMonths={2}
+                    />
+                  </PopoverContent>
+                </Popover>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
         <Button type="submit" disabled={isPending}>Save Product</Button>
       </form>

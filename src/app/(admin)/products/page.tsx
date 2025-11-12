@@ -1,6 +1,8 @@
+
 'use client';
 import { useCollection, useFirebase, useMemoFirebase } from "@/firebase";
 import { Product } from "@/lib/types";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -8,14 +10,32 @@ import { MoreHorizontal, PackagePlus, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { collection, query, orderBy } from "firebase/firestore";
+import { collection, query, orderBy, Timestamp } from "firebase/firestore";
+
+function getStatus(startDate: Timestamp, endDate: Timestamp): { text: string; variant: "default" | "secondary" | "destructive" | "outline" } {
+    if (!startDate || !endDate) return { text: "Unknown", variant: "secondary" };
+    const now = new Date();
+    const start = startDate.toDate();
+    const end = endDate.toDate();
+
+    if (now < start) return { text: "Upcoming", variant: "outline" };
+    if (now > end) return { text: "Expired", variant: "secondary" };
+    return { text: "Live", variant: "default" };
+}
+
+function formatDate(date: Timestamp): string {
+    if (!date) return 'N/A';
+    const d = date.toDate();
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
 
 export default function AdminProductsPage() {
   const { firestore } = useFirebase();
 
   const productsQuery = useMemoFirebase(() => {
     if (!firestore) return null;
-    return query(collection(firestore, 'products'), orderBy('name', 'asc'));
+    return query(collection(firestore, 'products'), orderBy('launchDateStart', 'desc'));
   }, [firestore]);
   
   const { data: products, isLoading } = useCollection<Product>(productsQuery);
@@ -43,14 +63,15 @@ export default function AdminProductsPage() {
                 <TableRow>
                   <TableHead>Name</TableHead>
                   <TableHead>Price</TableHead>
-                  <TableHead>Category</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Launch Window</TableHead>
                   <TableHead><span className="sr-only">Actions</span></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {isLoading ? (
                   <TableRow>
-                    <TableCell colSpan={4} className="text-center">
+                    <TableCell colSpan={5} className="text-center">
                        <div className="flex items-center justify-center p-8">
                          <Loader2 className="mr-2 h-8 w-8 animate-spin" />
                          <span>Loading Products...</span>
@@ -59,11 +80,15 @@ export default function AdminProductsPage() {
                   </TableRow>
                 ) : products && products.length > 0 ? (
                   products.map((product) => {
+                    const status = getStatus(product.launchDateStart!, product.launchDateEnd!);
                     return (
                       <TableRow key={product.id}>
                         <TableCell className="font-medium">{product.name}</TableCell>
                         <TableCell>₹{product.price.toFixed(2)}</TableCell>
-                        <TableCell>{product.category}</TableCell>
+                        <TableCell>
+                          <Badge variant={status.variant}>{status.text}</Badge>
+                        </TableCell>
+                        <TableCell>{formatDate(product.launchDateStart!)} to {formatDate(product.launchDateEnd!)}</TableCell>
                         <TableCell>
                            <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -84,7 +109,7 @@ export default function AdminProductsPage() {
                   })
                 ) : (
                    <TableRow>
-                    <TableCell colSpan={4} className="text-center">
+                    <TableCell colSpan={5} className="text-center">
                       No products found.
                     </TableCell>
                   </TableRow>
