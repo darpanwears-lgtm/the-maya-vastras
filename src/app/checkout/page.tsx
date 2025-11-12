@@ -18,8 +18,8 @@ import { Loader2, ShoppingBag } from 'lucide-react';
 import Header from '@/components/header';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useUser, useFirebase, useDoc, useMemoFirebase } from '@/firebase';
-import { useEffect, useState, useTransition } from 'react';
-import { Product, Order } from '@/lib/types';
+import { useEffect, useTransition } from 'react';
+import { Product } from '@/lib/types';
 import { doc, collection, serverTimestamp } from 'firebase/firestore';
 import { addDocumentNonBlocking } from '@/firebase/non-blocking-updates';
 import { useToast } from '@/hooks/use-toast';
@@ -73,11 +73,15 @@ export default function CheckoutPage() {
   });
 
   useEffect(() => {
-    if (!isUserLoading && user) {
+    if (user && !isUserLoading) {
       form.setValue('email', user.email || '');
-      const [firstName, ...lastNameParts] = (user.displayName || '').split(' ');
-      form.setValue('firstName', firstName);
-      form.setValue('lastName', lastNameParts.join(' '));
+      if (user.displayName) {
+        const nameParts = user.displayName.split(' ');
+        const firstName = nameParts.shift() || '';
+        const lastName = nameParts.join(' ');
+        form.setValue('firstName', firstName);
+        form.setValue('lastName', lastName);
+      }
     }
   }, [user, isUserLoading, form]);
 
