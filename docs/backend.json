@@ -51,16 +51,6 @@
             "required": ["url"]
           }
         },
-        "launchDateStart": {
-          "type": "string",
-          "description": "Start date for when the product is available, as a string.",
-          "format": "date-time"
-        },
-        "launchDateEnd": {
-          "type": "string",
-          "description": "End date for when the product is available, as a string.",
-          "format": "date-time"
-        },
         "category": {
           "type": "string",
           "description": "Category of the product."
@@ -77,8 +67,6 @@
         "sizes",
         "colors",
         "images",
-        "launchDateStart",
-        "launchDateEnd",
         "category",
         "garmentType"
       ]
@@ -200,7 +188,7 @@
           "schema": {
             "$ref": "#/backend/entities/Product"
           },
-          "description": "Stores product information, including launch dates.",
+          "description": "Stores product information.",
           "params": [
             {
               "name": "productId",

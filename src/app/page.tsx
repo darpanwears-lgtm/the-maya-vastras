@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
 import Header from '@/components/header';
 import { useFirebase, useCollection, useMemoFirebase } from '@/firebase';
-import { collection, query, where, Timestamp } from 'firebase/firestore';
+import { collection, query } from 'firebase/firestore';
 import type { Product } from '@/lib/types';
 import { Loader2 } from 'lucide-react';
 
@@ -16,17 +16,14 @@ export default function Home() {
   const { firestore } = useFirebase();
   const heroImage = "https://images.unsplash.com/photo-1698422634311-54a43463375b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxhYnN0cmFjdCUyMHZlZGljfGVufDB8fHx8MTc2NDUzOTY2NXww&ixlib=rb-4.1.0&q=80&w=1080";
 
-  const availableProductsQuery = useMemoFirebase(() => {
+  const productsQuery = useMemoFirebase(() => {
     if (!firestore) return null;
-    const now = new Date();
     return query(
-      collection(firestore, "products"),
-      where("launchDateStart", "<=", now),
-      where("launchDateEnd", ">=", now)
+      collection(firestore, "products")
     );
   }, [firestore]);
 
-  const { data: availableProducts, isLoading } = useCollection<Product>(availableProductsQuery);
+  const { data: availableProducts, isLoading } = useCollection<Product>(productsQuery);
 
   return (
       <div className="relative z-10 flex min-h-screen flex-col">
@@ -79,7 +76,7 @@ export default function Home() {
             ) : (
               <section className="text-center my-20 p-8 border border-dashed border-border rounded-lg">
                 <h2 className="text-2xl font-bold font-headline mb-2">The Portal is Closed</h2>
-                <p className="text-muted-foreground">The current launch has ended. A new transmission is imminent.</p>
+                <p className="text-muted-foreground">There are no products available at this time. A new transmission is imminent.</p>
                 <p className="text-primary font-bold mt-4">{`Next drop: ${upcomingLaunch.date}`}</p>
               </section>
             )}

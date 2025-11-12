@@ -1,24 +1,25 @@
-import { products } from "@/lib/data";
-import { Badge } from "@/components/ui/badge";
+'use client';
+import { useCollection, useFirebase, useMemoFirebase } from "@/firebase";
+import { Product } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { MoreHorizontal, PackagePlus } from "lucide-react";
+import { MoreHorizontal, PackagePlus, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Timestamp } from "firebase/firestore";
-
-function getStatus(startDate: Timestamp | Date, endDate: Timestamp | Date): { text: string; variant: "default" | "secondary" | "destructive" | "outline" } {
-    const now = new Date();
-    const start = startDate instanceof Date ? startDate : startDate.toDate();
-    const end = endDate instanceof Date ? endDate : endDate.toDate();
-
-    if (now < start) return { text: "Upcoming", variant: "outline" };
-    if (now > end) return { text: "Expired", variant: "secondary" };
-    return { text: "Live", variant: "default" };
-}
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { collection, query, orderBy } from "firebase/firestore";
 
 export default function AdminProductsPage() {
+  const { firestore } = useFirebase();
+
+  const productsQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return query(collection(firestore, 'products'), orderBy('name', 'desc'));
+  }, [firestore]);
+  
+  const { data: products, isLoading } = useCollection<Product>(productsQuery);
+
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
@@ -36,47 +37,61 @@ export default function AdminProductsPage() {
           <CardDescription>Manage your store's products here.</CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Price</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Launch Window</TableHead>
-                <TableHead><span className="sr-only">Actions</span></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {products.map((product) => {
-                const status = getStatus(product.launchDateStart, product.launchDateEnd);
-                return (
-                  <TableRow key={product.id}>
-                    <TableCell className="font-medium">{product.name}</TableCell>
-                    <TableCell>${product.price.toFixed(2)}</TableCell>
-                    <TableCell>
-                      <Badge variant={status.variant}>{status.text}</Badge>
-                    </TableCell>
-                    <TableCell>{product.launchStartDate} to {product.launchEndDate}</TableCell>
-                    <TableCell>
-                       <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button aria-haspopup="true" size="icon" variant="ghost">
-                            <MoreHorizontal className="h-4 w-4" />
-                            <span className="sr-only">Toggle menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuItem>Edit</DropdownMenuItem>
-                          <DropdownMenuItem>Delete</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+          <ScrollArea className="h-[400px]">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Price</TableHead>
+                  <TableHead>Category</TableHead>
+                  <TableHead><span className="sr-only">Actions</span></TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {isLoading ? (
+                  <TableRow>
+                    <TableCell colSpan={4} className="text-center">
+                       <div className="flex items-center justify-center p-8">
+                         <Loader2 className="mr-2 h-8 w-8 animate-spin" />
+                         <span>Loading Products...</span>
+                       </div>
                     </TableCell>
                   </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
+                ) : products && products.length > 0 ? (
+                  products.map((product) => {
+                    return (
+                      <TableRow key={product.id}>
+                        <TableCell className="font-medium">{product.name}</TableCell>
+                        <TableCell>₹{product.price.toFixed(2)}</TableCell>
+                        <TableCell>{product.category}</TableCell>
+                        <TableCell>
+                           <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button aria-haspopup="true" size="icon" variant="ghost">
+                                <MoreHorizontal className="h-4 w-4" />
+                                <span className="sr-only">Toggle menu</span>
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                              <DropdownMenuItem>Edit</DropdownMenuItem>
+                              <DropdownMenuItem>Delete</DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })
+                ) : (
+                   <TableRow>
+                    <TableCell colSpan={4} className="text-center">
+                      No products found.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </ScrollArea>
         </CardContent>
       </Card>
     </div>
