@@ -24,8 +24,18 @@ import {
 } from "@/components/ui/avatar"
 
 const InstagramIcon = () => (
-    <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-      <path fillRule="evenodd" d="M12.315 2c-4.04.05-4.555.2-6.113.86a6.22 6.22 0 00-4.32 4.32c-.66 1.558-.81 2.073-.86 6.113-.05 4.04.2 4.555.86 6.113a6.22 6.22 0 004.32 4.32c1.558.66 2.073.81 6.113.86 4.04-.05 4.555-.2 6.113-.86a6.22 6.22 0 004.32-4.32c.66-1.558.81-2.073.86-6.113.05-4.04-.2-4.555-.86-6.113a6.22 6.22 0 00-4.32-4.32C16.87 2.2 16.355 2.05 12.315 2zm-1.8 3.9h3.6a.4.4 0 01.4.4v3.6a.4.4 0 01-.4.4h-3.6a.4.4 0 01-.4-.4V6.3a.4.4 0 01.4-.4zM12 10.5a3.5 3.5 0 100 7 3.5 3.5 0 000-7zm0 5.5a2 2 0 110-4 2 2 0 010 4z" clipRule="evenodd" />
+    <svg
+      className="h-5 w-5"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
     </svg>
 );
 
