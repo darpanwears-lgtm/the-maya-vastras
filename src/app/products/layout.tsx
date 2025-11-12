@@ -35,7 +35,7 @@ export default function ProductLayout({
         )}
       >
         <Image 
-            src="https://tehelka.com/media/2020/10/40-1.jpg"
+            src="https://d3vzcd81g3m050.cloudfront.net/wp-content/uploads/2022/04/spiritualism-g324b71d99_1280-1024x739.jpg"
             alt="Peaceful Vedic background"
             fill
             className="object-cover w-full h-full z-0 opacity-20"

@@ -30,7 +30,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'tehelka.com',
+        hostname: 'd3vzcd81g3m050.cloudfront.net',
         port: '',
         pathname: '/**',
       },
