@@ -35,6 +35,12 @@
       "description": "Front view of the Maya Code Hoodie",
       "imageUrl": "https://images.unsplash.com/photo-1727529164740-e12cd3451f06?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxob29kaWUlMjBkYXJrfGVufDB8fHx8MTc2MjkzMTQwMXww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "hoodie dark"
+    },
+    {
+      "id": "hero_background_1",
+      "description": "Abstract vedic and mayan inspired art for hero background",
+      "imageUrl": "https://images.unsplash.com/photo-1698422634311-54a43463375b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxhYnN0cmFjdCUyMHZlZGljfGVufDB8fHx8MTc2NDUzOTY2NXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "abstract vedic"
     }
   ]
 }
