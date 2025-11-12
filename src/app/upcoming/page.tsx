@@ -1,3 +1,4 @@
+
 'use client';
 
 import Header from '@/components/header';
@@ -11,6 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import UnlockingAnimation from '@/components/unlocking-animation';
+import { Badge } from '@/components/ui/badge';
 
 export default function UpcomingPage() {
   const { firestore } = useFirebase();
@@ -129,6 +131,9 @@ export default function UpcomingPage() {
       <main className="flex-1">
         <div className="container mx-auto px-4 py-8">
           <section className="text-center my-12">
+            <Badge variant="outline" className="mb-4 border-primary text-primary text-sm py-1 px-4 bg-background/50">
+              PREPAID ACCESS
+            </Badge>
             <h1 className="text-5xl md:text-7xl font-bold font-headline tracking-tighter mb-4 text-white">
               Upcoming Drops
             </h1>
