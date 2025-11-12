@@ -193,4 +193,3 @@ export default function ProductDetails({ product }: { product: Product }) {
     </div>
   );
 }
-
