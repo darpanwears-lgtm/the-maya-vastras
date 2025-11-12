@@ -1,4 +1,3 @@
-
 'use client';
 
 import { upcomingLaunch as staticLaunchData } from '@/lib/data';
@@ -42,9 +41,10 @@ export default function Home() {
   // Product Data Fetching
   const productsQuery = useMemoFirebase(() => {
     if (!firestore) return null;
+    // Fetch products that have already launched
     return query(
       collection(firestore, "products"),
-      where("launchDateStart", "<=", Timestamp.now()),
+      where("launchDateStart", "<=", Timestamp.now())
     );
   }, [firestore]);
 
@@ -53,7 +53,15 @@ export default function Home() {
   // Dynamic carousel images from products
   const carouselImages = useMemo(() => {
     if (!products) return [];
-    return products
+    // Only show products in the carousel that are still active (end date is in the future)
+    const activeProducts = products.filter(p => {
+      if (!p.launchDateEnd) return true; // If no end date, it's always active
+      const now = new Date();
+      const endDate = p.launchDateEnd.toDate();
+      return endDate > now;
+    });
+
+    return activeProducts
       .filter(p => p.images && p.images.length > 0)
       .map(p => ({
         id: p.id,
@@ -73,8 +81,8 @@ export default function Home() {
   // Filter products based on search and category
   const filteredProducts = useMemo(() => {
     return products
-      ?.filter(p => { // First, filter by availability
-        if (!p.launchDateEnd) return true;
+      ?.filter(p => { // First, filter by availability (end date)
+        if (!p.launchDateEnd) return true; // No end date means it's always available
         const now = new Date();
         const endDate = p.launchDateEnd.toDate();
         return endDate > now;
@@ -225,7 +233,7 @@ export default function Home() {
               ) : (
                 <div className="text-center my-20 p-8 border border-dashed border-border rounded-lg">
                   <h3 className="text-xl font-bold font-headline mb-2">No Products Found</h3>
-                  <p className="text-muted-foreground">Try adjusting your search or filter.</p>
+                  <p className="text-muted-foreground">Try adjusting your search or filter. All current products may have expired.</p>
                 </div>
               )}
             </section>

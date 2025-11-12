@@ -40,6 +40,7 @@ export default function UpcomingPage() {
   const upcomingProductsQuery = useMemoFirebase(() => {
     if (!firestore) return null;
     const now = Timestamp.now();
+    // Only fetch products where the launch date is in the future.
     return query(
       collection(firestore, "products"),
       where("launchDateStart", ">", now)
