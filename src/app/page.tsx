@@ -81,6 +81,7 @@ export default function Home() {
   return (
     <>
       <MatrixBackground />
+      <div className="fixed inset-0 top-[40vh] z-[5] bg-gradient-to-t from-background to-transparent pointer-events-none"></div>
       <div className="relative z-10 flex min-h-screen flex-col">
         <Header />
         <main className="flex-1">
