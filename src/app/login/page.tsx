@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Button } from "@/components/ui/button";
@@ -7,7 +8,9 @@ import Header from "@/components/header";
 import { useAuth, useUser } from "@/firebase";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { Loader2 } from "lucide-react";
 
 const GoogleIcon = () => (
   <svg className="mr-2 h-4 w-4" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
@@ -19,7 +22,9 @@ const GoogleIcon = () => (
 export default function LoginPage() {
   const auth = useAuth();
   const router = useRouter();
+  const { toast } = useToast();
   const { user, isUserLoading } = useUser();
+  const [isSigningIn, setIsSigningIn] = useState(false);
 
   useEffect(() => {
     if (!isUserLoading && user) {
@@ -28,12 +33,28 @@ export default function LoginPage() {
   }, [user, isUserLoading, router]);
 
   const handleGoogleSignIn = async () => {
+    if (!auth) {
+      toast({
+        variant: "destructive",
+        title: "Authentication Error",
+        description: "Firebase Auth service is not available. Please try again later.",
+      });
+      return;
+    }
+    setIsSigningIn(true);
     const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);
-      router.push('/admin/dashboard');
-    } catch (error) {
+      // The useEffect will handle the redirect on successful login
+    } catch (error: any) {
       console.error("Error signing in with Google: ", error);
+      toast({
+        variant: "destructive",
+        title: "Sign-in Failed",
+        description: error.message || "An unknown error occurred during sign-in.",
+      });
+    } finally {
+      setIsSigningIn(false);
     }
   };
 
@@ -51,9 +72,13 @@ export default function LoginPage() {
               </CardHeader>
               <CardContent>
                 <div className="flex flex-col space-y-4">
-                  <Button className="w-full bg-white text-black hover:bg-gray-200" onClick={handleGoogleSignIn}>
-                      <GoogleIcon/>
-                      Sign in with Google
+                  <Button className="w-full bg-white text-black hover:bg-gray-200" onClick={handleGoogleSignIn} disabled={isUserLoading || isSigningIn}>
+                      {isSigningIn ? (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      ) : (
+                        <GoogleIcon />
+                      )}
+                      {isSigningIn ? "Signing In..." : "Sign in with Google"}
                   </Button>
                   <p className="px-8 text-center text-sm text-muted-foreground">
                     By continuing, you agree to our Terms of Service and Privacy Policy.
