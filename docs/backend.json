@@ -1,0 +1,259 @@
+{
+  "entities": {
+    "Product": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Product",
+      "type": "object",
+      "description": "Represents a clothing item in the VedicVerse catalog.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the product entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the product."
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed description of the product."
+        },
+        "price": {
+          "type": "number",
+          "description": "Price of the product."
+        },
+        "sizes": {
+          "type": "array",
+          "description": "Available sizes for the product.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "URL of the product image.",
+          "format": "uri"
+        },
+        "launchDateStart": {
+          "type": "string",
+          "description": "Start date for when the product is available, as a string.",
+          "format": "date-time"
+        },
+        "launchDateEnd": {
+          "type": "string",
+          "description": "End date for when the product is available, as a string.",
+          "format": "date-time"
+        },
+        "category": {
+          "type": "string",
+          "description": "Category of the product."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description",
+        "price",
+        "sizes",
+        "imageUrl",
+        "launchDateStart",
+        "launchDateEnd",
+        "category"
+      ]
+    },
+    "User": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "User",
+      "type": "object",
+      "description": "Represents a user account.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the user entity."
+        },
+        "email": {
+          "type": "string",
+          "description": "User's email address.",
+          "format": "email"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "User's display name."
+        }
+      },
+      "required": [
+        "id",
+        "email",
+        "displayName"
+      ]
+    },
+    "Order": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Order",
+      "type": "object",
+      "description": "Represents a customer order.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the order entity."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to User. (Relationship: User 1:N Order)"
+        },
+        "productId": {
+          "type": "string",
+          "description": "Reference to Product. (Relationship: Product 1:N Order)"
+        },
+        "orderDate": {
+          "type": "string",
+          "description": "Date the order was placed.",
+          "format": "date-time"
+        },
+        "quantity": {
+          "type": "number",
+          "description": "Quantity of the product ordered."
+        },
+        "totalAmount": {
+          "type": "number",
+          "description": "Total amount for the order."
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "productId",
+        "orderDate",
+        "quantity",
+        "totalAmount"
+      ]
+    },
+    "LaunchSchedule": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "LaunchSchedule",
+      "type": "object",
+      "description": "Represents a scheduled product launch.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the launch schedule entity."
+        },
+        "launchDateStart": {
+          "type": "string",
+          "description": "Start date and time of the launch schedule.",
+          "format": "date-time"
+        },
+        "launchDateEnd": {
+          "type": "string",
+          "description": "End date and time of the launch schedule.",
+          "format": "date-time"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the launch schedule."
+        }
+      },
+      "required": [
+        "id",
+        "launchDateStart",
+        "launchDateEnd",
+        "description"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/products/{productId}",
+        "definition": {
+          "entityName": "Product",
+          "schema": {
+            "$ref": "#/backend/entities/Product"
+          },
+          "description": "Stores product information, including launch dates.",
+          "params": [
+            {
+              "name": "productId",
+              "description": "The unique identifier of the product."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/launchSchedules/{launchScheduleId}",
+        "definition": {
+          "entityName": "LaunchSchedule",
+          "schema": {
+            "$ref": "#/backend/entities/LaunchSchedule"
+          },
+          "description": "Stores launch schedule details.",
+          "params": [
+            {
+              "name": "launchScheduleId",
+              "description": "The unique identifier for the launch schedule."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Stores user profile information.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/orders/{orderId}",
+        "definition": {
+          "entityName": "Order",
+          "schema": {
+            "$ref": "#/backend/entities/Order"
+          },
+          "description": "Stores order information for a specific user. Enforces path-based ownership.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user who placed the order."
+            },
+            {
+              "name": "orderId",
+              "description": "The unique identifier of the order."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/roles_admin/{userId}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Collection of admin users, existence of the document grants admin role.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the admin user."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "This Firestore structure is designed to support VedicVerse's clothing brand application, focusing on product management, scheduled launches, user authentication, and order tracking. It prioritizes authorization independence, clarity, and scalability.\n\n*   **Products Collection:** Stores product details, including launch dates. The `products` collection is flat and requires no authorization checks based on parent documents.\n*   **Launch Schedules Collection:**  Allows administrators to pre-define launch schedules. Products reference these schedules via `launchScheduleId`.\n*   **Users Collection:** Stores user profiles.  Each user document is secured based on `request.auth.uid` matching the `userId`.\n*   **Orders Collection:**  Stores order information, associated with a user.  Orders are placed under the `users/{userId}/orders/{orderId}` collection structure. This enforces path-based ownership, ensuring only the user or an admin can access their orders.\n*   **Admin Roles Collection:** Implements Database-Based Access Control (DBAC).  Presence in `/roles_admin/{uid}` grants admin privileges.\n\n**Authorization Independence:**\n\n*   The design avoids hierarchical authorization dependencies by denormalizing authorization data where needed. For example, the orders subcollection inherently ties the order to the user, providing authorization context without needing to read the parent user document.\n\n**QAPs (Rules are not Filters):**\n\n*   The segregation of concerns into separate collections allows for more secure `list` operations. For example, listing products doesn't require filtering based on user roles; all products in the `products` collection are accessible (subject to other rules, such as launch date).\n*   Path-based ownership in `/users/{userId}/orders/{orderId}` prevents unauthorized listing of orders.\n\n**Future Considerations:**\n\n*   Consider adding a `status` field to the `Product` entity (e.g., `DRAFT`, `ACTIVE`, `INACTIVE`) for better state management and filtering."
+  }
+}
