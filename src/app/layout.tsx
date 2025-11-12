@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import { Space_Grotesk } from 'next/font/google';
+import { Space_Grotesk, Cinzel_Decorative } from 'next/font/google';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
 import MatrixBackground from '@/components/matrix-background';
@@ -9,6 +9,12 @@ import Header from '@/components/header';
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
   variable: '--font-space-grotesk',
+});
+
+const cinzelDecorative = Cinzel_Decorative({
+  subsets: ['latin'],
+  weight: ['400', '700', '900'],
+  variable: '--font-cinzel-decorative',
 });
 
 export const metadata: Metadata = {
@@ -34,7 +40,8 @@ export default function RootLayout({
       <body
         className={cn(
           'font-body antialiased',
-          spaceGrotesk.variable
+          spaceGrotesk.variable,
+          cinzelDecorative.variable
         )}
       >
         <MatrixBackground />
