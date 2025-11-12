@@ -10,8 +10,8 @@ export type Product = {
   colors: string[];
   category: string;
   garmentType: string;
-  launchDateStart: string;
-  launchDateEnd: string;
+  launchDateStart: Timestamp;
+  launchDateEnd: Timestamp;
 };
 
 export type UpcomingLaunch = {

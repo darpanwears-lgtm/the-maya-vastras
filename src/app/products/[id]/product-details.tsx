@@ -7,32 +7,74 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { CreditCard, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useUser } from '@/firebase';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
+import Autoplay from "embla-carousel-autoplay"
 
 
 export default function ProductDetails({ product }: { product: Product }) {
   const [selectedColor, setSelectedColor] = useState(product.colors?.[0] || '');
   const [selectedSize, setSelectedSize] = useState(product.sizes?.[0] || '');
   const { user } = useUser();
+  const plugin = useRef(
+    Autoplay({ delay: 7000, stopOnInteraction: true })
+  )
 
-  const imageUrl = product.images?.[0]?.url || 'https://placehold.co/800x1067';
   const checkoutUrl = `/checkout?productId=${product.id}&color=${selectedColor}&size=${selectedSize}`;
 
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="grid md:grid-cols-2 gap-12 items-start">
         <div className="relative">
-          <div className="overflow-hidden rounded-lg shadow-lg shadow-primary/10">
-              <Image
-                src={imageUrl}
-                alt={product.name}
-                width={800}
-                height={1067}
-                className="object-cover w-full h-full"
-                data-ai-hint="fashion product"
-              />
-          </div>
+          <Carousel 
+             plugins={[plugin.current]}
+             className="w-full"
+             onMouseEnter={plugin.current.stop}
+             onMouseLeave={plugin.current.reset}
+          >
+            <CarouselContent>
+              {product.images.length > 0 ? product.images.map((image, index) => (
+                <CarouselItem key={index}>
+                  <div className="overflow-hidden rounded-lg shadow-lg shadow-primary/10">
+                    <Image
+                      src={image.url}
+                      alt={`${product.name} - image ${index + 1}`}
+                      width={800}
+                      height={1067}
+                      className="object-cover w-full h-full aspect-[3/4]"
+                      data-ai-hint="fashion product"
+                    />
+                  </div>
+                </CarouselItem>
+              )) : (
+                 <CarouselItem>
+                  <div className="overflow-hidden rounded-lg shadow-lg shadow-primary/10">
+                    <Image
+                      src='https://placehold.co/800x1067'
+                      alt={product.name}
+                      width={800}
+                      height={1067}
+                      className="object-cover w-full h-full aspect-[3/4]"
+                      data-ai-hint="fashion product"
+                    />
+                  </div>
+                </CarouselItem>
+              )}
+            </CarouselContent>
+            {product.images.length > 1 && (
+              <>
+                <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 z-10 hidden md:flex" />
+                <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 z-10 hidden md:flex" />
+              </>
+            )}
+          </Carousel>
         </div>
         
         <div className="flex flex-col gap-6">
