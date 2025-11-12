@@ -27,7 +27,10 @@ export default function Home() {
   const { data: products, isLoading } = useCollection<Product>(productsQuery);
   
   // Filter out products whose launch window has ended
-  const availableProducts = products?.filter(p => p.launchDateEnd.toDate() > new Date());
+  const availableProducts = products?.filter(p => {
+    if (!p.launchDateEnd) return true; // if no end date, it's available
+    return p.launchDateEnd.toDate() > new Date();
+  });
 
 
   return (

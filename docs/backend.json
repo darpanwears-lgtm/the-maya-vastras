@@ -58,6 +58,16 @@
         "garmentType": {
           "type": "string",
           "description": "Specific type of garment."
+        },
+        "launchDateStart": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The start date of the product launch window."
+        },
+        "launchDateEnd": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The end date of the product launch window."
         }
       },
       "required": [
@@ -110,6 +120,20 @@
         "description": {
           "type": "string",
           "description": "Description of the launch schedule."
+        },
+        "accessCode": {
+            "type": "string",
+            "description": "The password required to access the upcoming drop."
+        },
+        "launchDateStart": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The start date of the launch window."
+        },
+        "launchDateEnd": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The end date of the launch window."
         }
       },
       "required": [
@@ -151,7 +175,7 @@
           "schema": {
             "$ref": "#/backend/entities/LaunchSchedule"
           },
-          "description": "Stores launch schedule details.",
+          "description": "Stores launch schedule details, including access codes.",
           "params": [
             {
               "name": "launchScheduleId",
@@ -193,6 +217,7 @@
         }
       }
     ],
-    "reasoning": "This Firestore structure is designed to support VedicVerse's clothing brand application, focusing on product management, scheduled launches, and user authentication. It prioritizes authorization independence, clarity, and scalability.\n\n*   **Products Collection:** Stores product details. The `products` collection is flat and requires no authorization checks based on parent documents.\n*   **Launch Schedules Collection:**  Allows administrators to pre-define launch schedules.\n*   **Users Collection:** Stores user profiles.  Each user document is secured based on `request.auth.uid` matching the `userId`.\n*   **Admin Roles Collection:** Implements Database-Based Access Control (DBAC).  Presence in `/roles_admin/{uid}` grants admin privileges.\n\n**Authorization Independence:**\n\n*   The design avoids hierarchical authorization dependencies.\n\n**QAPs (Rules are not Filters):**\n\n*   The segregation of concerns into separate collections allows for more secure `list` operations. For example, listing products doesn't require filtering based on user roles; all products in the `products` collection are accessible (subject to other rules).\n\n**Future Considerations:**\n\n*   Consider adding a `status` field to the `Product` entity (e.g., `DRAFT`, `ACTIVE`, `INACTIVE`) for better state management and filtering."
+    "reasoning": "This Firestore structure is designed to support VedicVerse's clothing brand application, focusing on product management, scheduled launches, and user authentication. It prioritizes authorization independence, clarity, and scalability.\n\n*   **Products Collection:** Stores product details. The `products` collection is flat and requires no authorization checks based on parent documents.\n*   **Launch Schedules Collection:**  Allows administrators to pre-define launch schedules, including access codes for password-protected drops.\n*   **Users Collection:** Stores user profiles.  Each user document is secured based on `request.auth.uid` matching the `userId`.\n*   **Admin Roles Collection:** Implements Database-Based Access Control (DBAC).  Presence in `/roles_admin/{uid}` grants admin privileges.\n\n**Authorization Independence:**\n\n*   The design avoids hierarchical authorization dependencies.\n\n**QAPs (Rules are not Filters):**\n\n*   The segregation of concerns into separate collections allows for more secure `list` operations. For example, listing products doesn't require filtering based on user roles; all products in the `products` collection are accessible (subject to other rules).\n\n**Future Considerations:**\n\n*   Consider adding a `status` field to the `Product` entity (e.g., `DRAFT`, `ACTIVE`, `INACTIVE`) for better state management and filtering."
   }
 }
+
