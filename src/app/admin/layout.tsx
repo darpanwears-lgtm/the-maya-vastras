@@ -28,7 +28,6 @@ import Logo from '@/components/logo';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/header';
 import { useRouter } from 'next/navigation';
-import MatrixBackground from '@/components/matrix-background';
 import { useUser } from '@/firebase';
 
 export default function AdminLayout({
@@ -49,15 +48,12 @@ export default function AdminLayout({
   // Show a loading screen while user state is being determined
   if (isUserLoading) {
     return (
-      <>
-        <MatrixBackground />
-        <div className="flex h-screen w-full items-center justify-center bg-background">
-          <div className="relative z-10 flex items-center gap-2 text-lg">
-            <Loader2 className="h-6 w-6 animate-spin text-primary" />
-            <span>Loading...</span>
-          </div>
+      <div className="flex h-screen w-full items-center justify-center bg-background">
+        <div className="relative z-10 flex items-center gap-2 text-lg">
+          <Loader2 className="h-6 w-6 animate-spin text-primary" />
+          <span>Loading...</span>
         </div>
-      </>
+      </div>
     );
   }
 
@@ -65,7 +61,6 @@ export default function AdminLayout({
   if (user) {
     return (
         <SidebarProvider>
-          <MatrixBackground />
           <div className="relative z-10">
             <Header />
             <div className="flex min-h-screen">

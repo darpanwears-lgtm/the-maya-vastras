@@ -22,7 +22,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import MatrixBackground from '@/components/matrix-background';
 import Image from 'next/image';
 import {
   Carousel,
@@ -106,145 +105,138 @@ export default function Home() {
 
   return (
     <>
-      <div className="relative z-10 flex min-h-screen flex-col">
-        <Header />
-        <main className="flex-1">
-          <div className="container mx-auto px-4 py-8">
-            <section className="text-center my-12">
-              <h2 
-                className="text-2xl md:text-4xl font-headline text-primary tracking-widest"
-                style={{ textShadow: '0 0 15px hsl(var(--primary) / 0.5)' }}
-              >
-                &quot;The veil of Maya is thin here. Look closer.&quot;
-              </h2>
-            </section>
-            <section className="relative text-center mb-8 py-12 md:mb-16 md:py-20 rounded-lg overflow-hidden">
-              <MatrixBackground />
-              <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-background to-transparent z-[5]"></div>
-              <div className="relative z-20">
-                {isLoadingHero ? (
-                  <div className="flex justify-center mb-4"><Loader2 className="h-6 w-6 animate-spin" /></div>
-                ) : (
-                  <>
-                    <Badge variant="outline" className="mb-4 border-primary text-primary text-sm py-1 px-4 bg-background/50">
-                      {heroContent.date}
-                    </Badge>
-                    <h1 className="text-4xl md:text-7xl font-bold font-headline tracking-tighter mb-4 text-white">
-                      {heroContent.name}
-                    </h1>
-                    <p className="text-base md:text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
-                      {heroContent.description}
-                    </p>
-                  </>
-                )}
-                <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-[0_0_25px_5px_hsl(var(--primary)/0.4)] transition-shadow duration-300" asChild>
-                  <Link href="/upcoming">Early Access</Link>
-                </Button>
-              </div>
-            </section>
+      <Header />
+      <main className="flex-1">
+        <div className="container mx-auto px-4 py-8">
+          <section className="text-center my-12">
+            <h2 
+              className="text-2xl md:text-4xl font-headline text-primary tracking-widest"
+              style={{ textShadow: '0 0 15px hsl(var(--primary) / 0.5)' }}
+            >
+              &quot;The veil of Maya is thin here. Look closer.&quot;
+            </h2>
+          </section>
+          <section className="relative text-center mb-8 py-12 md:mb-16 md:py-20 rounded-lg overflow-hidden bg-background/50 backdrop-blur-sm">
+            <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-background to-transparent z-[5]"></div>
+            <div className="relative z-20">
+              {isLoadingHero ? (
+                <div className="flex justify-center mb-4"><Loader2 className="h-6 w-6 animate-spin" /></div>
+              ) : (
+                <>
+                  <Badge variant="outline" className="mb-4 border-primary text-primary text-sm py-1 px-4 bg-background/50">
+                    {heroContent.date}
+                  </Badge>
+                  <h1 className="text-4xl md:text-7xl font-bold font-headline tracking-tighter mb-4 text-white">
+                    {heroContent.name}
+                  </h1>
+                  <p className="text-base md:text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+                    {heroContent.description}
+                  </p>
+                </>
+              )}
+              <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-[0_0_25px_5px_hsl(var(--primary)/0.4)] transition-shadow duration-300" asChild>
+                <Link href="/upcoming">Early Access</Link>
+              </Button>
+            </div>
+          </section>
 
-             {carouselImages.length > 0 && (
-                <section className="relative mb-16 rounded-lg overflow-hidden border border-border/20">
-                    <div className="absolute inset-0">
-                        <MatrixBackground />
-                    </div>
-                    <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-black/50 to-black/80 z-[5]"></div>
-                    <div className="relative z-10 p-4 md:p-8">
-                        <Carousel
-                          plugins={[plugin.current]}
-                          className="w-full max-w-3xl mx-auto"
-                          onMouseEnter={plugin.current.stop}
-                          onMouseLeave={plugin.current.reset}
-                        >
-                          <CarouselContent>
-                            {carouselImages.map((image) => (
-                              <CarouselItem key={image.id}>
-                                <div className="overflow-hidden rounded-md shadow-lg shadow-primary/10">
-                                  <Image
-                                    src={image.imageUrl}
-                                    alt={image.description}
-                                    width={1200}
-                                    height={675}
-                                    className="object-cover w-full h-auto aspect-video"
-                                    data-ai-hint={image.imageHint}
-                                  />
-                                </div>
-                              </CarouselItem>
-                            ))}
-                          </CarouselContent>
-                          <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 z-10 hidden md:flex" />
-                          <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 z-10 hidden md:flex" />
-                        </Carousel>
-                    </div>
-                </section>
-             )}
-
-            {isLoadingProducts ? (
-               <section className="text-center my-20 p-8">
-                 <div className="flex items-center justify-center">
-                    <Loader2 className="mr-2 h-8 w-8 animate-spin" />
-                    <span>Loading Products...</span>
-                 </div>
-               </section>
-            ) : products && products.length > 0 ? (
-              <section>
-                <h2 className="text-3xl font-bold text-center mb-10 font-headline">Available Now</h2>
-                
-                <div className="mb-10 flex justify-center gap-4">
-                  <div className="relative max-w-lg w-full">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                    <Input
-                      type="text"
-                      placeholder="Search products..."
-                      className="pl-10"
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                    />
+           {carouselImages.length > 0 && (
+              <section className="relative mb-16 rounded-lg overflow-hidden border border-border/20 bg-background/50 backdrop-blur-sm">
+                  <div className="relative z-10 p-4 md:p-8">
+                      <Carousel
+                        plugins={[plugin.current]}
+                        className="w-full max-w-3xl mx-auto"
+                        onMouseEnter={plugin.current.stop}
+                        onMouseLeave={plugin.current.reset}
+                      >
+                        <CarouselContent>
+                          {carouselImages.map((image) => (
+                            <CarouselItem key={image.id}>
+                              <div className="overflow-hidden rounded-md shadow-lg shadow-primary/10">
+                                <Image
+                                  src={image.imageUrl}
+                                  alt={image.description}
+                                  width={1200}
+                                  height={675}
+                                  className="object-cover w-full h-auto aspect-video"
+                                  data-ai-hint={image.imageHint}
+                                />
+                              </div>
+                            </CarouselItem>
+                          ))}
+                        </CarouselContent>
+                        <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 z-10 hidden md:flex" />
+                        <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 z-10 hidden md:flex" />
+                      </Carousel>
                   </div>
-                   <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                       <Button variant="outline" size="icon">
-                          <ListFilter className="h-4 w-4" />
-                          <span className="sr-only">Filter by category</span>
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Filter by Category</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuRadioGroup value={selectedCategory} onValueChange={setSelectedCategory}>
-                        {categories.map((category) => (
-                          <DropdownMenuRadioItem key={category} value={category}>
-                            {category}
-                          </DropdownMenuRadioItem>
-                        ))}
-                      </DropdownMenuRadioGroup>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+              </section>
+           )}
+
+          {isLoadingProducts ? (
+             <section className="text-center my-20 p-8">
+               <div className="flex items-center justify-center">
+                  <Loader2 className="mr-2 h-8 w-8 animate-spin" />
+                  <span>Loading Products...</span>
+               </div>
+             </section>
+          ) : products && products.length > 0 ? (
+            <section>
+              <h2 className="text-3xl font-bold text-center mb-10 font-headline">Available Now</h2>
+              
+              <div className="mb-10 flex justify-center gap-4">
+                <div className="relative max-w-lg w-full">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                  <Input
+                    type="text"
+                    placeholder="Search products..."
+                    className="pl-10"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
                 </div>
+                 <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                     <Button variant="outline" size="icon">
+                        <ListFilter className="h-4 w-4" />
+                        <span className="sr-only">Filter by category</span>
+                      </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>Filter by Category</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuRadioGroup value={selectedCategory} onValueChange={setSelectedCategory}>
+                      {categories.map((category) => (
+                        <DropdownMenuRadioItem key={category} value={category}>
+                          {category}
+                        </DropdownMenuRadioItem>
+                      ))}
+                    </DropdownMenuRadioGroup>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
 
 
-                {filteredProducts && filteredProducts.length > 0 ? (
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
-                    {filteredProducts.map(product => (
-                      <ProductCard key={product.id} product={product} />
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center my-20 p-8 border border-dashed border-border rounded-lg">
-                    <h3 className="text-xl font-bold font-headline mb-2">No Products Found</h3>
-                    <p className="text-muted-foreground">Try adjusting your search or filter.</p>
-                  </div>
-                )}
-              </section>
-            ) : (
-              <section className="text-center my-20 p-8 border border-dashed border-border rounded-lg">
-                <h2 className="text-2xl font-bold font-headline mb-2">The Portal is Closed</h2>
-                <p className="text-muted-foreground">There are no products available at this time. A new transmission is imminent.</p>
-              </section>
-            )}
-          </div>
-        </main>
-      </div>
+              {filteredProducts && filteredProducts.length > 0 ? (
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
+                  {filteredProducts.map(product => (
+                    <ProductCard key={product.id} product={product} />
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center my-20 p-8 border border-dashed border-border rounded-lg">
+                  <h3 className="text-xl font-bold font-headline mb-2">No Products Found</h3>
+                  <p className="text-muted-foreground">Try adjusting your search or filter.</p>
+                </div>
+              )}
+            </section>
+          ) : (
+            <section className="text-center my-20 p-8 border border-dashed border-border rounded-lg">
+              <h2 className="text-2xl font-bold font-headline mb-2">The Portal is Closed</h2>
+              <p className="text-muted-foreground">There are no products available at this time. A new transmission is imminent.</p>
+            </section>
+          )}
+        </div>
+      </main>
     </>
   );
 }

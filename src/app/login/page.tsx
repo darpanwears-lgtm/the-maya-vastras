@@ -11,7 +11,6 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
-import MatrixBackground from "@/components/matrix-background";
 import UnlockingAnimation from "@/components/unlocking-animation";
 
 const GoogleIcon = () => (
@@ -64,10 +63,17 @@ export default function LoginPage() {
     }
   };
 
+  if (isUserLoading) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center bg-background">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   if (loginSuccess) {
      return (
       <div className="flex h-screen w-full items-center justify-center bg-background">
-        <MatrixBackground />
         <UnlockingAnimation />
       </div>
     );
@@ -75,36 +81,33 @@ export default function LoginPage() {
 
   return (
     <>
-      <MatrixBackground />
-      <div className="relative z-10 flex min-h-screen flex-col">
-        <Header />
-        <main className="flex-1">
-          <div className="flex min-h-[calc(100vh-theme(spacing.14))] items-center justify-center p-4">
-            <Card className="w-full max-w-sm border-border/50 bg-card/50">
-              <CardHeader className="text-center">
-                <Logo className="mx-auto mb-2" />
-                <CardTitle className="font-headline text-xl md:text-2xl">Enter the Verse</CardTitle>
-                <CardDescription>Sign in to continue your journey</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-col space-y-4">
-                  <Button className="w-full bg-white text-black hover:bg-gray-200" onClick={handleGoogleSignIn} disabled={isUserLoading || isSigningIn}>
-                      {isSigningIn ? (
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      ) : (
-                        <GoogleIcon />
-                      )}
-                      {isSigningIn ? "Signing In..." : "Sign in with Google"}
-                  </Button>
-                  <p className="px-8 text-center text-sm text-muted-foreground">
-                    By continuing, you agree to our Terms of Service and Privacy Policy.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </main>
-      </div>
+      <Header />
+      <main className="flex-1">
+        <div className="flex min-h-[calc(100vh-theme(spacing.14))] items-center justify-center p-4">
+          <Card className="w-full max-w-sm border-border/50 bg-card/50">
+            <CardHeader className="text-center">
+              <Logo className="mx-auto mb-2" />
+              <CardTitle className="font-headline text-xl md:text-2xl">Enter the Verse</CardTitle>
+              <CardDescription>Sign in to continue your journey</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col space-y-4">
+                <Button className="w-full bg-white text-black hover:bg-gray-200" onClick={handleGoogleSignIn} disabled={isUserLoading || isSigningIn}>
+                    {isSigningIn ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <GoogleIcon />
+                    )}
+                    {isSigningIn ? "Signing In..." : "Sign in with Google"}
+                </Button>
+                <p className="px-8 text-center text-sm text-muted-foreground">
+                  By continuing, you agree to our Terms of Service and Privacy Policy.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </main>
     </>
   );
 }

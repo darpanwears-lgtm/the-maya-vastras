@@ -9,7 +9,6 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from '@/components/header';
 import { Loader2, ShieldCheck } from 'lucide-react';
-import MatrixBackground from '@/components/matrix-background';
 
 export default function MakeMeAdminPage() {
   const { firestore } = useFirebase();
@@ -67,7 +66,6 @@ export default function MakeMeAdminPage() {
   if (isUserLoading || !user) {
      return (
       <div className="flex h-screen w-full items-center justify-center bg-background">
-        <MatrixBackground />
         <div className="relative z-10 flex items-center gap-2 text-lg">
             <Loader2 className="h-6 w-6 animate-spin text-primary" />
             <span>Loading User...</span>
@@ -78,9 +76,8 @@ export default function MakeMeAdminPage() {
 
   return (
     <>
-      <MatrixBackground />
+      <Header />
       <div className="relative z-10 flex min-h-screen flex-col items-center justify-center">
-        <Header />
         <div className="flex flex-col items-center text-center p-4">
           <h1 className="text-3xl font-bold font-headline mb-4">Grant Admin Access</h1>
           <p className="text-muted-foreground mb-2 max-w-md">

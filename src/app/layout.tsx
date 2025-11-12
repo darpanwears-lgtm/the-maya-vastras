@@ -7,6 +7,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { FirebaseClientProvider } from '@/firebase';
 import Footer from '@/components/footer';
 import ClientLayoutProvider from '@/components/client-layout-provider';
+import MatrixBackground from '@/components/matrix-background';
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -47,9 +48,10 @@ export default function RootLayout({
           cinzelDecorative.variable
         )}
       >
+        <MatrixBackground />
         <FirebaseClientProvider>
           <ClientLayoutProvider>
-            <div className="flex min-h-screen flex-col">
+            <div className="relative z-10 flex min-h-screen flex-col">
               <div className="flex-grow">
                 {children}
               </div>
