@@ -32,8 +32,7 @@ import MatrixBackground from '@/components/matrix-background';
 import { useUser, useDoc, useFirebase, useMemoFirebase } from '@/firebase';
 import { doc } from 'firebase/firestore';
 
-// This new component will only be rendered when the user is a confirmed admin.
-function AdminContent({ children }: { children: React.ReactNode }) {
+function AdminUI({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
       <div className="flex min-h-screen">
@@ -101,9 +100,8 @@ function AdminContent({ children }: { children: React.ReactNode }) {
         </SidebarInset>
       </div>
     </SidebarProvider>
-  );
+  )
 }
-
 
 export default function AdminLayout({
   children,
@@ -113,6 +111,7 @@ export default function AdminLayout({
   const router = useRouter();
   const { firestore } = useFirebase();
   const { user, isUserLoading } = useUser();
+  const [authStatus, setAuthStatus] = React.useState<'loading' | 'admin' | 'denied'>('loading');
 
   const adminRoleRef = useMemoFirebase(() => {
     if (!firestore || !user?.uid) return null;
@@ -121,15 +120,25 @@ export default function AdminLayout({
 
   const { data: adminRole, isLoading: isAdminRoleLoading } = useDoc(adminRoleRef);
   
-  const isLoading = isUserLoading || isAdminRoleLoading;
-  const isAdmin = !isLoading && !!user && !!adminRole;
-
   React.useEffect(() => {
-    // If loading is finished and there's no user, redirect to login.
-    if (!isLoading && !user) {
-      router.push('/login');
+    const isLoading = isUserLoading || isAdminRoleLoading;
+    if (isLoading) {
+      setAuthStatus('loading');
+      return;
     }
-  }, [user, isLoading, router]);
+    
+    if (!user) {
+      router.push('/login');
+      return;
+    }
+
+    if (adminRole) {
+      setAuthStatus('admin');
+    } else {
+      setAuthStatus('denied');
+    }
+
+  }, [user, isUserLoading, adminRole, isAdminRoleLoading, router]);
   
   return (
     <>
@@ -137,35 +146,28 @@ export default function AdminLayout({
       <div className="relative z-10">
         <Header />
         
-        {(() => {
-          // While authentication or admin role is being checked, show a loading screen.
-          if (isLoading) {
-            return (
-              <div className="flex h-[calc(100vh-theme(spacing.14))] w-full items-center justify-center bg-background">
-                <div className="relative z-10 flex items-center gap-2 text-lg">
-                    <Loader2 className="h-6 w-6 animate-spin text-primary" />
-                    <span>Authenticating & Verifying Access...</span>
-                </div>
-              </div>
-            );
-          }
-          
-          // After loading, if user is not an admin, show Access Denied.
-          if (!isAdmin) {
-             return (
-                <div className="flex flex-col items-center justify-center h-[calc(100vh-theme(spacing.14))] text-center p-4">
-                    <h1 className="text-2xl font-bold mb-4">Access Denied</h1>
-                    <p className="text-muted-foreground mb-8 max-w-md">You do not have permission to view this page. Ensure you are logged in with an admin account.</p>
-                    <Button asChild>
-                        <Link href="/">Return to Homepage</Link>
-                    </Button>
-                </div>
-            );
-          }
-          
-          // Only if the user is a confirmed admin, render the full admin layout with children.
-          return <AdminContent>{children}</AdminContent>;
-        })()}
+        {authStatus === 'loading' && (
+          <div className="flex h-[calc(100vh-theme(spacing.14))] w-full items-center justify-center bg-background">
+            <div className="relative z-10 flex items-center gap-2 text-lg">
+                <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                <span>Authenticating & Verifying Access...</span>
+            </div>
+          </div>
+        )}
+        
+        {authStatus === 'denied' && (
+           <div className="flex flex-col items-center justify-center h-[calc(100vh-theme(spacing.14))] text-center p-4">
+               <h1 className="text-2xl font-bold mb-4">Access Denied</h1>
+               <p className="text-muted-foreground mb-8 max-w-md">You do not have permission to view this page. Ensure you are logged in with an admin account.</p>
+               <Button asChild>
+                   <Link href="/">Return to Homepage</Link>
+               </Button>
+           </div>
+        )}
+        
+        {authStatus === 'admin' && (
+          <AdminUI>{children}</AdminUI>
+        )}
         
       </div>
     </>
