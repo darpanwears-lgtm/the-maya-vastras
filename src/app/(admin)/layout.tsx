@@ -6,7 +6,6 @@ import Link from 'next/link';
 import {
   Home,
   Package,
-  ShoppingCart,
   Settings,
   PackagePlus,
   ArrowLeft,
@@ -60,14 +59,6 @@ function AdminContent({ children }: { children: React.ReactNode }) {
                    <Link href="/admin/products">
                     <Package />
                     <span>Products</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton href="/admin/orders" asChild>
-                  <Link href="/admin/orders">
-                    <ShoppingCart />
-                    <span>Orders</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
