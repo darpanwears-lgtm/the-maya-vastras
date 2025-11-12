@@ -1,5 +1,5 @@
 
-import { doc, getDoc, collection, getDocs } from 'firebase/firestore';
+import { doc, getDoc, collection, getDocs, Timestamp } from 'firebase/firestore';
 import { notFound } from 'next/navigation';
 import type { Product } from '@/lib/types';
 import { initializeFirebase } from '@/firebase/init-server';
@@ -30,11 +30,24 @@ async function getProduct(id: string): Promise<Product | null> {
             return null;
         }
 
-        const productData = productSnap.data() as Omit<Product, 'id'>;
+        const productData = productSnap.data();
         
+        // Serialize Timestamps to strings before returning
+        const launchDateStart = (productData.launchDateStart as Timestamp).toDate().toISOString();
+        const launchDateEnd = (productData.launchDateEnd as Timestamp).toDate().toISOString();
+
         return {
             id: productSnap.id,
-            ...productData,
+            name: productData.name,
+            description: productData.description,
+            price: productData.price,
+            images: productData.images,
+            sizes: productData.sizes,
+            colors: productData.colors,
+            category: productData.category,
+            garmentType: productData.garmentType,
+            launchDateStart,
+            launchDateEnd,
         };
     } catch (error) {
         console.error("Failed to fetch product:", error);
