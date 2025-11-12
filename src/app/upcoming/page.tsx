@@ -1,4 +1,3 @@
-
 'use client';
 
 import Header from '@/components/header';
@@ -7,27 +6,16 @@ import { useFirebase, useCollection, useMemoFirebase, useDoc } from '@/firebase'
 import type { Product, LaunchSchedule } from '@/lib/types';
 import { collection, query, where, Timestamp, doc } from 'firebase/firestore';
 import { Loader2, Lock } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-
-const SESSION_STORAGE_KEY = 'vv-launch-access';
 
 export default function UpcomingPage() {
   const { firestore } = useFirebase();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-
-  // Check session storage on initial render
-  useEffect(() => {
-    const storedPassword = sessionStorage.getItem(SESSION_STORAGE_KEY);
-    if (storedPassword) {
-      // In a real app, you'd re-validate this, but for this simple case, we trust it.
-      setIsAuthenticated(true);
-    }
-  }, []);
 
   const launchScheduleRef = useMemoFirebase(() => {
     if (!firestore) return null;
@@ -50,7 +38,6 @@ export default function UpcomingPage() {
   const handlePasswordSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (launchSchedule && password === launchSchedule.accessCode) {
-      sessionStorage.setItem(SESSION_STORAGE_KEY, password);
       setIsAuthenticated(true);
       setError('');
     } else {
