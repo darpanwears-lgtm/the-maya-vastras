@@ -23,10 +23,10 @@ import {
   AvatarImage,
 } from "@/components/ui/avatar"
 
-const GoogleIcon = () => (
-  <svg className="mr-2 h-4 w-4" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
-    <path fill="currentColor" d="M488 261.8C488 403.3 381.5 512 244 512 110.3 512 0 401.7 0 265.2 0 128.5 110.3 18.2 244 18.2c71.4 0 133.3 29.3 178.9 76.5l-68.9 67.3c-24.5-23-58.6-37.5-98.3-37.5-82.9 0-151.1 67.1-151.1 149.9s68.2 149.9 151.1 149.9c97.1 0 130.4-71.1 134.4-108.3H244v-88.4h244z"></path>
-  </svg>
+const InstagramIcon = () => (
+    <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path fillRule="evenodd" d="M12.315 2c-4.04.05-4.555.2-6.113.86a6.22 6.22 0 00-4.32 4.32c-.66 1.558-.81 2.073-.86 6.113-.05 4.04.2 4.555.86 6.113a6.22 6.22 0 004.32 4.32c1.558.66 2.073.81 6.113.86 4.04-.05 4.555-.2 6.113-.86a6.22 6.22 0 004.32-4.32c.66-1.558.81-2.073.86-6.113.05-4.04-.2-4.555-.86-6.113a6.22 6.22 0 00-4.32-4.32C16.87 2.2 16.355 2.05 12.315 2zm-1.8 3.9h3.6a.4.4 0 01.4.4v3.6a.4.4 0 01-.4.4h-3.6a.4.4 0 01-.4-.4V6.3a.4.4 0 01.4-.4zM12 10.5a3.5 3.5 0 100 7 3.5 3.5 0 000-7zm0 5.5a2 2 0 110-4 2 2 0 010 4z" clipRule="evenodd" />
+    </svg>
 );
 
 
@@ -69,6 +69,12 @@ const Header = () => {
           </div>
         </div>
         <div className="flex items-center justify-end space-x-2">
+          <Button variant="ghost" size="icon" asChild>
+            <Link href="https://instagram.com/themayavastra" target="_blank" rel="noopener noreferrer">
+              <InstagramIcon />
+              <span className="sr-only">Instagram</span>
+            </Link>
+          </Button>
           <nav className="flex items-center space-x-2">
             {isUserLoading ? null : user ? (
               <DropdownMenu>
@@ -89,13 +95,6 @@ const Header = () => {
                       </p>
                     </div>
                   </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                     <Link href="/admin/dashboard">
-                      <GanttChartSquare className="mr-2 h-4 w-4" />
-                      <span>Admin</span>
-                    </Link>
-                  </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleSignOut} disabled={isSigningOut}>
                     <LogOut className="mr-2 h-4 w-4" />
