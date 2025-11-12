@@ -1,3 +1,4 @@
+
 'use client';
 
 import { upcomingLaunch as staticLaunchData } from '@/lib/data';
@@ -22,7 +23,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import MatrixBackground from '@/components/matrix-background';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import Image from 'next/image';
 import {
   Carousel,
@@ -39,8 +39,7 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const plugin = useRef(Autoplay({ delay: 3000, stopOnInteraction: true }));
-  const carouselImages = PlaceHolderImages.filter(img => img.id.startsWith('carousel_'));
-
+  
   // Product Data Fetching
   const productsQuery = useMemoFirebase(() => {
     if (!firestore) return null;
@@ -51,6 +50,19 @@ export default function Home() {
   }, [firestore]);
 
   const { data: products, isLoading: isLoadingProducts } = useCollection<Product>(productsQuery);
+
+  // Dynamic carousel images from products
+  const carouselImages = useMemo(() => {
+    if (!products) return [];
+    return products
+      .filter(p => p.images && p.images.length > 0)
+      .map(p => ({
+        id: p.id,
+        imageUrl: p.images[0].url,
+        description: p.name,
+        imageHint: "fashion product"
+      }));
+  }, [products]);
 
   // Memoize categories
   const categories = useMemo(() => {
@@ -131,39 +143,41 @@ export default function Home() {
               </div>
             </section>
 
-             <section className="relative mb-16 rounded-lg overflow-hidden border border-border/20">
-                <div className="absolute inset-0">
-                    <MatrixBackground />
-                </div>
-                 <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-black/50 to-black/80 z-[5]"></div>
-                <div className="relative z-10 p-4 md:p-8">
-                    <Carousel
-                      plugins={[plugin.current]}
-                      className="w-full max-w-3xl mx-auto"
-                      onMouseEnter={plugin.current.stop}
-                      onMouseLeave={plugin.current.reset}
-                    >
-                      <CarouselContent>
-                        {carouselImages.map((image) => (
-                          <CarouselItem key={image.id}>
-                            <div className="overflow-hidden rounded-md shadow-lg shadow-primary/10">
-                              <Image
-                                src={image.imageUrl}
-                                alt={image.description}
-                                width={1200}
-                                height={675}
-                                className="object-cover w-full h-auto aspect-video"
-                                data-ai-hint={image.imageHint}
-                              />
-                            </div>
-                          </CarouselItem>
-                        ))}
-                      </CarouselContent>
-                      <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 z-10 hidden md:flex" />
-                      <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 z-10 hidden md:flex" />
-                    </Carousel>
-                </div>
-            </section>
+             {carouselImages.length > 0 && (
+                <section className="relative mb-16 rounded-lg overflow-hidden border border-border/20">
+                    <div className="absolute inset-0">
+                        <MatrixBackground />
+                    </div>
+                    <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-black/50 to-black/80 z-[5]"></div>
+                    <div className="relative z-10 p-4 md:p-8">
+                        <Carousel
+                          plugins={[plugin.current]}
+                          className="w-full max-w-3xl mx-auto"
+                          onMouseEnter={plugin.current.stop}
+                          onMouseLeave={plugin.current.reset}
+                        >
+                          <CarouselContent>
+                            {carouselImages.map((image) => (
+                              <CarouselItem key={image.id}>
+                                <div className="overflow-hidden rounded-md shadow-lg shadow-primary/10">
+                                  <Image
+                                    src={image.imageUrl}
+                                    alt={image.description}
+                                    width={1200}
+                                    height={675}
+                                    className="object-cover w-full h-auto aspect-video"
+                                    data-ai-hint={image.imageHint}
+                                  />
+                                </div>
+                              </CarouselItem>
+                            ))}
+                          </CarouselContent>
+                          <CarouselPrevious className="absolute left-2 top-1/2 -translate-y-1/2 z-10 hidden md:flex" />
+                          <CarouselNext className="absolute right-2 top-1/2 -translate-y-1/2 z-10 hidden md:flex" />
+                        </Carousel>
+                    </div>
+                </section>
+             )}
 
             {isLoadingProducts ? (
                <section className="text-center my-20 p-8">
