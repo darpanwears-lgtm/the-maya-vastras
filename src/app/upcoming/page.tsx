@@ -4,7 +4,7 @@
 import Header from '@/components/header';
 import ProductCard from '@/components/product-card';
 import { useFirebase, useCollection, useMemoFirebase, useDoc } from '@/firebase';
-import type { Product, LaunchSchedule } from '@/lib/types';
+import type { Product, LaunchSchedule, HeroSection } from '@/lib/types';
 import { collection, query, where, Timestamp, doc } from 'firebase/firestore';
 import { Loader2, Lock } from 'lucide-react';
 import { useState } from 'react';
@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import UnlockingAnimation from '@/components/unlocking-animation';
 import { Badge } from '@/components/ui/badge';
+import { upcomingLaunch as staticLaunchData } from '@/lib/data';
 
 export default function UpcomingPage() {
   const { firestore } = useFirebase();
@@ -20,6 +21,14 @@ export default function UpcomingPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isUnlocking, setIsUnlocking] = useState(false);
+
+  // Fetch Hero Data for Drop Name
+  const heroContentRef = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return doc(firestore, 'siteSettings/hero');
+  }, [firestore]);
+  
+  const { data: heroData, isLoading: isLoadingHero } = useDoc<HeroSection>(heroContentRef);
 
   const launchScheduleRef = useMemoFirebase(() => {
     if (!firestore) return null;
@@ -53,7 +62,9 @@ export default function UpcomingPage() {
     }
   };
 
-  const isLoading = isScheduleLoading || areProductsLoading;
+  const isLoading = isScheduleLoading || areProductsLoading || isLoadingHero;
+  
+  const dropName = heroData?.title || staticLaunchData.name;
 
   const renderContent = () => {
     if (isLoading) {
@@ -132,13 +143,13 @@ export default function UpcomingPage() {
         <div className="container mx-auto px-4 py-8">
           <section className="text-center my-12">
             <Badge variant="outline" className="mb-4 border-primary text-primary text-sm py-1 px-4 bg-background/50">
-              PREPAID ACCESS
+              {isLoadingHero ? <Loader2 className="h-4 w-4 animate-spin" /> : dropName}
             </Badge>
             <h1 className="text-5xl md:text-7xl font-bold font-headline tracking-tighter mb-4 text-white">
-              Upcoming Drops
+              Prepaid Access
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-              Be the first to know. Here's a look at what's coming next from THE MAYA VASTRA.
+              This section is for prepaid orders of the upcoming drop. Enter the access code to view the collection.
             </p>
           </section>
           {renderContent()}
