@@ -28,7 +28,7 @@ import {
 import Logo from '@/components/logo';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/header';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import MatrixBackground from '@/components/matrix-background';
 import { useUser, useDoc, useFirebase, useMemoFirebase } from '@/firebase';
 import { doc } from 'firebase/firestore';
@@ -43,19 +43,16 @@ export default function AdminLayout({
   const { user, isUserLoading } = useUser();
 
   const adminRoleRef = useMemoFirebase(() => {
-    // Start checking as soon as we have a user ID, even if user object is resolving.
     if (!firestore || !user?.uid) return null;
     return doc(firestore, `roles_admin/${user.uid}`);
   }, [firestore, user?.uid]);
 
   const { data: adminRole, isLoading: isAdminRoleLoading } = useDoc(adminRoleRef);
   
-  // The overall loading is finished when both the user check AND the admin role check are done.
-  const isLoading = isUserLoading || isAdminRoleLoading;
+  const isLoading = isUserLoading || (!!user && isAdminRoleLoading);
   const isAdmin = !!adminRole;
 
   React.useEffect(() => {
-    // If loading is finished and there's no user, redirect to login.
     if (!isLoading && !user) {
       router.push('/login');
     }
@@ -73,7 +70,7 @@ export default function AdminLayout({
     );
   }
   
-  if (!isAdmin) {
+  if (!user || !isAdmin) {
     return (
         <div className="flex flex-col items-center justify-center h-screen">
             <h1 className="text-2xl font-bold mb-4">Access Denied</h1>
@@ -85,7 +82,6 @@ export default function AdminLayout({
     );
   }
 
-  // Only render children if user is a confirmed admin
   return (
     <>
       <MatrixBackground />
