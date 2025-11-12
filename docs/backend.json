@@ -186,6 +186,9 @@
   "auth": {
     "providers": [
       "google.com"
+    ],
+    "authorizedDomains": [
+      "6000-firebase-studio-1762930899824.cluster-y3k7ko3fang56qzieg3trwgyfg.cloudworkstations.dev"
     ]
   },
   "firestore": {
