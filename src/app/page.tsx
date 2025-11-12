@@ -1,23 +1,32 @@
 
 'use client';
 
-import { products, upcomingLaunch } from '@/lib/data';
+import { upcomingLaunch } from '@/lib/data';
 import ProductCard from '@/components/product-card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import Header from '@/components/header';
+import { useFirebase, useCollection, useMemoFirebase } from '@/firebase';
+import { collection, query, where, Timestamp } from 'firebase/firestore';
+import type { Product } from '@/lib/types';
+import { Loader2 } from 'lucide-react';
 
 export default function Home() {
-  const now = new Date();
-  const availableProducts = products.filter(p => {
-    const startDate = new Date(p.launchStartDate);
-    const endDate = new Date(p.launchEndDate);
-    return now >= startDate && now <= endDate;
-  });
+  const { firestore } = useFirebase();
+  const heroImage = "https://images.unsplash.com/photo-1698422634311-54a43463375b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxhYnN0cmFjdCUyMHZlZGljfGVufDB8fHx8MTc2NDUzOTY2NXww&ixlib=rb-4.1.0&q=80&w=1080";
 
-  const heroImage = PlaceHolderImages.find(img => img.id === 'hero_background_1');
+  const availableProductsQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    const now = new Date();
+    return query(
+      collection(firestore, "products"),
+      where("launchDateStart", "<=", now),
+      where("launchDateEnd", ">=", now)
+    );
+  }, [firestore]);
+
+  const { data: availableProducts, isLoading } = useCollection<Product>(availableProductsQuery);
 
   return (
       <div className="relative z-10 flex min-h-screen flex-col">
@@ -27,11 +36,11 @@ export default function Home() {
             <section className="relative text-center my-16 py-20 rounded-lg overflow-hidden">
               {heroImage && (
                 <Image 
-                  src={heroImage.imageUrl}
-                  alt={heroImage.description}
+                  src={heroImage}
+                  alt="Abstract vedic and mayan inspired art for hero background"
                   fill
                   className="object-cover w-full h-full z-0"
-                  data-ai-hint={heroImage.imageHint}
+                  data-ai-hint="abstract vedic"
                 />
               )}
               <div className="absolute inset-0 bg-black/60 z-10"/>
@@ -39,7 +48,7 @@ export default function Home() {
                 <Badge variant="outline" className="mb-4 border-primary text-primary text-sm py-1 px-4 bg-background/50">
                   {upcomingLaunch.date}
                 </Badge>
-                <h1 className="text-5xl md:text-7xl font-bold font-headline tracking-tighter mb-4 text-transparent bg-clip-text bg-gradient-to-r from-primary via-purple-400 to-primary [text-shadow:0_0_10px_hsl(var(--primary)/0.5)]">
+                <h1 className="text-5xl md:text-7xl font-bold font-headline tracking-tighter mb-4 text-transparent bg-clip-text bg-gradient-to-r from-primary via-purple-400 to-primary [text-shadow:0_0_20px_hsl(var(--primary)/0.8)]">
                   {upcomingLaunch.name}
                 </h1>
                 <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
@@ -51,7 +60,14 @@ export default function Home() {
               </div>
             </section>
 
-            {availableProducts.length > 0 ? (
+            {isLoading ? (
+               <section className="text-center my-20 p-8">
+                 <div className="flex items-center justify-center">
+                    <Loader2 className="mr-2 h-8 w-8 animate-spin" />
+                    <span>Loading Live Drop...</span>
+                 </div>
+               </section>
+            ) : availableProducts && availableProducts.length > 0 ? (
               <section>
                 <h2 className="text-3xl font-bold text-center mb-10 font-headline">Live Now</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">

@@ -1,3 +1,4 @@
+
 {
   "entities": {
     "Product": {
@@ -29,10 +30,26 @@
             "type": "string"
           }
         },
-        "imageUrl": {
-          "type": "string",
-          "description": "URL of the product image.",
-          "format": "uri"
+        "colors": {
+          "type": "array",
+          "description": "Available colors for the product.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "images": {
+          "type": "array",
+          "description": "URLs of the product images.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string",
+                "format": "uri"
+              }
+            },
+            "required": ["url"]
+          }
         },
         "launchDateStart": {
           "type": "string",
@@ -47,18 +64,23 @@
         "category": {
           "type": "string",
           "description": "Category of the product."
+        },
+        "garmentType": {
+          "type": "string",
+          "description": "Specific type of garment."
         }
       },
       "required": [
-        "id",
         "name",
         "description",
         "price",
         "sizes",
-        "imageUrl",
+        "colors",
+        "images",
         "launchDateStart",
         "launchDateEnd",
-        "category"
+        "category",
+        "garmentType"
       ]
     },
     "User": {

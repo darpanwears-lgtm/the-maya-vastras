@@ -1,15 +1,17 @@
+import { Timestamp } from "firebase/firestore";
+
 export type Product = {
   id: string;
   name: string;
   description: string;
   price: number;
-  images: string[];
+  images: { url: string }[];
   sizes: string[];
   colors: string[];
   category: string;
   garmentType: string;
-  launchStartDate: string;
-  launchEndDate: string;
+  launchDateStart: Timestamp | Date;
+  launchDateEnd: Timestamp | Date;
 };
 
 export type Order = {

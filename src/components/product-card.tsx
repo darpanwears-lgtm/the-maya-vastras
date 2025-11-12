@@ -1,6 +1,5 @@
 import Image from 'next/image';
 import type { Product } from '@/lib/types';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from './ui/button';
 import { Eye } from 'lucide-react';
@@ -11,23 +10,21 @@ type ProductCardProps = {
 };
 
 const ProductCard = ({ product }: ProductCardProps) => {
-  const placeholderImage = PlaceHolderImages.find(img => img.id === product.images[0]);
+  const imageUrl = product.images?.[0]?.url || 'https://placehold.co/600x800';
 
   return (
     <Card className="group overflow-hidden border-border/50 bg-card/50 transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 flex flex-col">
       <Link href={`/products/${product.id}`} className="flex flex-col flex-grow">
         <CardHeader className="p-0">
           <div className="overflow-hidden rounded-t-lg">
-            {placeholderImage && (
               <Image
-                src={placeholderImage.imageUrl}
+                src={imageUrl}
                 alt={product.name}
                 width={600}
                 height={800}
                 className="object-cover w-full h-auto aspect-[3/4] transition-transform duration-500 group-hover:scale-105"
-                data-ai-hint={placeholderImage.imageHint}
+                data-ai-hint="fashion product"
               />
-            )}
           </div>
         </CardHeader>
         <CardContent className="p-4 flex-grow">

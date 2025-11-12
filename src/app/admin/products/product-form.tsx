@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useForm, useFieldArray } from "react-hook-form";
@@ -31,6 +30,11 @@ import { format } from "date-fns";
 import { generateProductDescription } from "@/ai/flows/generate-product-description";
 import { useToast } from "@/hooks/use-toast";
 import { useState, useTransition } from "react";
+import { useFirebase } from "@/firebase";
+import { collection } from "firebase/firestore";
+import { addDocumentNonBlocking } from "@/firebase";
+import { useRouter } from "next/navigation";
+
 
 const productFormSchema = z.object({
   name: z.string().min(3, "Product name must be at least 3 characters."),
@@ -39,6 +43,8 @@ const productFormSchema = z.object({
   description: z.string().min(10, "Description must be at least 10 characters.").max(500),
   price: z.coerce.number().min(0, "Price cannot be negative."),
   images: z.array(z.object({ url: z.string().url("Please enter a valid URL.") })).min(1, "Please add at least one image."),
+  colors: z.string().min(1, "Please enter at least one color."),
+  sizes: z.string().min(1, "Please enter at least one size."),
   launchDate: z.object({
     from: z.date({ required_error: "A start date is required."}),
     to: z.date({ required_error: "An end date is required."}),
@@ -50,6 +56,9 @@ type ProductFormValues = z.infer<typeof productFormSchema>;
 export function ProductForm() {
   const { toast } = useToast();
   const [isPending, startTransition] = useTransition();
+  const { firestore } = useFirebase();
+  const router = useRouter();
+
 
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productFormSchema),
@@ -60,6 +69,8 @@ export function ProductForm() {
       description: "",
       price: 0,
       images: [{ url: "" }],
+      colors: "",
+      sizes: "",
       launchDate: {
         from: undefined,
         to: undefined,
@@ -73,10 +84,34 @@ export function ProductForm() {
   });
 
   function onSubmit(data: ProductFormValues) {
-    console.log(data);
-    toast({
-      title: "Product Submitted",
-      description: "The new product has been saved.",
+    if (!firestore) return;
+    
+    startTransition(async () => {
+      try {
+        const productData = {
+          ...data,
+          launchDateStart: data.launchDate.from,
+          launchDateEnd: data.launchDate.to,
+          colors: data.colors.split(',').map(s => s.trim()),
+          sizes: data.sizes.split(',').map(s => s.trim()),
+        };
+        
+        const productsCollection = collection(firestore, "products");
+        await addDocumentNonBlocking(productsCollection, productData);
+
+        toast({
+          title: "Product Submitted",
+          description: "The new product has been saved successfully.",
+        });
+        router.push("/admin/products");
+      } catch (error) {
+        console.error("Failed to save product:", error);
+        toast({
+          variant: "destructive",
+          title: "Save Failed",
+          description: "Could not save the product at this time.",
+        });
+      }
     });
   }
 
@@ -255,6 +290,41 @@ export function ProductForm() {
               Add Image URL
             </Button>
           </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <FormField
+              control={form.control}
+              name="colors"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Colors</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g., Black, Neon Green" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    Enter comma-separated color names.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="sizes"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Sizes</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g., S, M, L, XL" {...field} />
+                  </FormControl>
+                   <FormDescription>
+                    Enter comma-separated size names.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
