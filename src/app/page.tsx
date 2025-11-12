@@ -116,14 +116,6 @@ export default function Home() {
       <Header />
       <main className="flex-1">
         <div className="container mx-auto px-4 py-8">
-          <section className="text-center my-12">
-            <h2 
-              className="text-2xl md:text-4xl font-headline text-primary tracking-widest"
-              style={{ textShadow: '0 0 15px hsl(var(--primary) / 0.5)' }}
-            >
-              &quot;The veil of Maya is thin here. Look closer.&quot;
-            </h2>
-          </section>
           <section className="relative text-center mb-8 py-12 md:mb-16 md:py-20 rounded-lg overflow-hidden bg-background/50 backdrop-blur-sm">
             <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-background to-transparent z-[5]"></div>
             <div className="relative z-20">
