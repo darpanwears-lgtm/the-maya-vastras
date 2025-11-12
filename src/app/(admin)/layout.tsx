@@ -111,7 +111,6 @@ export default function AdminLayout({
   const router = useRouter();
   const { firestore } = useFirebase();
   const { user, isUserLoading } = useUser();
-  const [authStatus, setAuthStatus] = React.useState<'loading' | 'admin' | 'denied'>('loading');
 
   const adminRoleRef = useMemoFirebase(() => {
     if (!firestore || !user?.uid) return null;
@@ -119,34 +118,24 @@ export default function AdminLayout({
   }, [firestore, user?.uid]);
 
   const { data: adminRole, isLoading: isAdminRoleLoading } = useDoc(adminRoleRef);
-  
+
   React.useEffect(() => {
-    const isLoading = isUserLoading || isAdminRoleLoading;
-    if (isLoading) {
-      setAuthStatus('loading');
-      return;
-    }
-    
-    if (!user) {
+    // Redirect to login if not loading and no user is found
+    if (!isUserLoading && !user) {
       router.push('/login');
-      return;
     }
+  }, [isUserLoading, user, router]);
 
-    if (adminRole) {
-      setAuthStatus('admin');
-    } else {
-      setAuthStatus('denied');
-    }
+  const isLoading = isUserLoading || isAdminRoleLoading;
+  const isAdmin = !!adminRole;
 
-  }, [user, isUserLoading, adminRole, isAdminRoleLoading, router]);
-  
   return (
     <>
       <MatrixBackground />
       <div className="relative z-10">
         <Header />
         
-        {authStatus === 'loading' && (
+        {isLoading && (
           <div className="flex h-[calc(100vh-theme(spacing.14))] w-full items-center justify-center bg-background">
             <div className="relative z-10 flex items-center gap-2 text-lg">
                 <Loader2 className="h-6 w-6 animate-spin text-primary" />
@@ -155,7 +144,7 @@ export default function AdminLayout({
           </div>
         )}
         
-        {authStatus === 'denied' && (
+        {!isLoading && !isAdmin && user && (
            <div className="flex flex-col items-center justify-center h-[calc(100vh-theme(spacing.14))] text-center p-4">
                <h1 className="text-2xl font-bold mb-4">Access Denied</h1>
                <p className="text-muted-foreground mb-8 max-w-md">You do not have permission to view this page. Ensure you are logged in with an admin account.</p>
@@ -165,7 +154,7 @@ export default function AdminLayout({
            </div>
         )}
         
-        {authStatus === 'admin' && (
+        {!isLoading && isAdmin && (
           <AdminUI>{children}</AdminUI>
         )}
         
