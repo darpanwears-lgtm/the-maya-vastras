@@ -1,11 +1,11 @@
-import { ShieldCheck, PackageCheck } from "lucide-react";
+import { ShieldCheck, PackageCheck, RotateCw } from "lucide-react";
 import Logo from "./logo";
 
 const Footer = () => {
   return (
     <footer className="relative z-10 w-full border-t border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 mt-12">
       <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center md:text-left">
           <div className="flex flex-col items-center md:items-start">
             <Logo />
             <p className="text-sm text-muted-foreground mt-2">
@@ -30,6 +30,16 @@ const Footer = () => {
              </div>
              <p className="text-xs text-muted-foreground max-w-xs">
                 We do not accept Cash on Delivery (COD). All payments are processed securely online.
+             </p>
+          </div>
+          <div className="flex flex-col items-center md:items-start gap-2">
+             <h3 className="font-headline text-lg">Return Policy</h3>
+             <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <RotateCw className="h-5 w-5 text-primary"/>
+                <span>No Returns/Exchanges</span>
+             </div>
+             <p className="text-xs text-muted-foreground max-w-xs">
+                Return or exchange are not available yet.
              </p>
           </div>
         </div>
