@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import MatrixBackground from "@/components/matrix-background";
+import UnlockingAnimation from "@/components/unlocking-animation";
 
 const GoogleIcon = () => (
   <svg className="mr-2 h-4 w-4" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
@@ -29,7 +30,9 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (!isUserLoading && user) {
-      router.push('/');
+        setTimeout(() => {
+            router.push('/');
+        }, 2500);
     }
   }, [user, isUserLoading, router]);
 
@@ -46,7 +49,7 @@ export default function LoginPage() {
     const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);
-      // The useEffect will handle the redirect on successful login
+      // The useEffect will handle the redirect on successful login after animation
     } catch (error: any) {
       console.error("Error signing in with Google: ", error);
       toast({
@@ -54,10 +57,18 @@ export default function LoginPage() {
         title: "Sign-in Failed",
         description: error.message || "An unknown error occurred during sign-in.",
       });
-    } finally {
       setIsSigningIn(false);
     }
   };
+
+  if (isSigningIn || (!isUserLoading && user)) {
+     return (
+      <div className="flex h-screen w-full items-center justify-center bg-background">
+        <MatrixBackground />
+        <UnlockingAnimation />
+      </div>
+    );
+  }
 
   return (
     <>

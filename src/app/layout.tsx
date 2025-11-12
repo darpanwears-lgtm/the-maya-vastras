@@ -9,6 +9,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { FirebaseClientProvider } from '@/firebase';
 import { useState, useEffect } from 'react';
 import WelcomeAnimation from '@/components/welcome-animation';
+import Footer from '@/components/footer';
 
 
 const spaceGrotesk = Space_Grotesk({
@@ -72,7 +73,12 @@ export default function RootLayout({
       >
         <WelcomeAnimation isVisible={showAnimation} />
         <FirebaseClientProvider>
-          {children}
+          <div className="flex min-h-screen flex-col">
+            <div className="flex-grow">
+              {children}
+            </div>
+            <Footer />
+          </div>
           <Toaster />
         </FirebaseClientProvider>
       </body>

@@ -1,4 +1,3 @@
-
 'use client';
 import type { Product } from '@/lib/types';
 import Image from 'next/image';
@@ -144,7 +143,7 @@ export default function ProductDetails({ product }: { product: Product }) {
                           <Label 
                             key={color}
                             htmlFor={`color-${color}`}
-                            className="flex items-center justify-center rounded-md border-2 border-muted bg-transparent px-4 py-2 text-sm font-medium hover:bg-accent cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/10 has-[:checked]:text-primary"
+                            className="flex items-center justify-center rounded-md border-2 border-muted bg-transparent px-4 py-2 text-sm font-medium hover:bg-accent cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary has-[:checked]:text-primary-foreground has-[:checked]:shadow-lg has-[:checked]:shadow-primary/20 transition-all"
                           >
                             <RadioGroupItem value={color} id={`color-${color}`} className="sr-only" />
                             {color}
@@ -166,7 +165,7 @@ export default function ProductDetails({ product }: { product: Product }) {
                           <Label 
                             key={size}
                             htmlFor={`size-${size}`}
-                            className="flex items-center justify-center rounded-md border-2 border-muted bg-transparent px-4 py-2 text-sm font-medium hover:bg-accent cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/10 has-[:checked]:text-primary"
+                            className="flex items-center justify-center rounded-md border-2 border-muted bg-transparent px-4 py-2 text-sm font-medium hover:bg-accent cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary has-[:checked]:text-primary-foreground has-[:checked]:shadow-lg has-[:checked]:shadow-primary/20 transition-all"
                           >
                             <RadioGroupItem value={size} id={`size-${size}`} className="sr-only" />
                             {size}
