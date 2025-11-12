@@ -120,14 +120,14 @@ export default function AdminLayout({
   const { data: adminRole, isLoading: isAdminRoleLoading } = useDoc(adminRoleRef);
 
   React.useEffect(() => {
-    // Redirect to login if not loading and no user is found
+    // Redirect to login if auth check is complete and no user is found
     if (!isUserLoading && !user) {
       router.push('/login');
     }
   }, [isUserLoading, user, router]);
 
-  const isLoading = isUserLoading || isAdminRoleLoading;
-  const isAdmin = !!adminRole;
+  const isLoading = isUserLoading || (user && isAdminRoleLoading);
+  const isAllowed = adminRole !== null && adminRole !== undefined;
 
   return (
     <>
@@ -144,7 +144,7 @@ export default function AdminLayout({
           </div>
         )}
         
-        {!isLoading && !isAdmin && user && (
+        {!isLoading && !isAllowed && (
            <div className="flex flex-col items-center justify-center h-[calc(100vh-theme(spacing.14))] text-center p-4">
                <h1 className="text-2xl font-bold mb-4">Access Denied</h1>
                <p className="text-muted-foreground mb-8 max-w-md">You do not have permission to view this page. Ensure you are logged in with an admin account.</p>
@@ -154,7 +154,7 @@ export default function AdminLayout({
            </div>
         )}
         
-        {!isLoading && isAdmin && (
+        {!isLoading && isAllowed && (
           <AdminUI>{children}</AdminUI>
         )}
         
