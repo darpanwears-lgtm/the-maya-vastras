@@ -30,7 +30,8 @@ import { Button } from '@/components/ui/button';
 import Header from '@/components/header';
 import { usePathname, useRouter } from 'next/navigation';
 import MatrixBackground from '@/components/matrix-background';
-import { useUser } from '@/firebase';
+import { useUser, useDoc, useFirebase, useMemoFirebase } from '@/firebase';
+import { doc } from 'firebase/firestore';
 
 export default function AdminLayout({
   children,
@@ -41,23 +42,45 @@ export default function AdminLayout({
   const isLoginPage = pathname.startsWith('/login');
   const { user, isUserLoading } = useUser();
   const router = useRouter();
+  const { firestore } = useFirebase();
+
+  const adminRoleRef = useMemoFirebase(() => {
+    if (!firestore || !user) return null;
+    return doc(firestore, `roles_admin/${user.uid}`);
+  }, [firestore, user]);
+
+  const { data: adminRole, isLoading: isAdminRoleLoading } = useDoc(adminRoleRef);
+  const isAdmin = adminRole !== null;
+  const isLoading = isUserLoading || isAdminRoleLoading;
 
 
   React.useEffect(() => {
-    if (!isUserLoading && !user) {
+    if (!isLoading && !user) {
       router.push('/login');
     }
-  }, [user, isUserLoading, router]);
-  
-  if (isUserLoading || !user) {
+  }, [user, isLoading, router]);
+
+   if (isLoading) {
      return (
       <div className="flex h-screen w-full items-center justify-center bg-background">
         <MatrixBackground />
         <div className="relative z-10 flex items-center gap-2 text-lg">
             <Loader2 className="h-6 w-6 animate-spin text-primary" />
-            <span>Authenticating...</span>
+            <span>Authenticating & Verifying Access...</span>
         </div>
       </div>
+    );
+  }
+  
+  if (!isAdmin) {
+    return (
+        <div className="flex flex-col items-center justify-center h-screen">
+            <h1 className="text-2xl font-bold mb-4">Access Denied</h1>
+            <p className="text-muted-foreground mb-8">You do not have permission to view this page.</p>
+            <Button asChild>
+                <Link href="/">Return to Homepage</Link>
+            </Button>
+        </div>
     );
   }
 
