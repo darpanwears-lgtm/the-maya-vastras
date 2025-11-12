@@ -9,10 +9,19 @@ import Header from '@/components/header';
 import { useFirebase, useCollection, useMemoFirebase, useDoc } from '@/firebase';
 import { collection, query, where, Timestamp, doc } from 'firebase/firestore';
 import type { Product, HeroSection } from '@/lib/types';
-import { Loader2, Search } from 'lucide-react';
+import { Loader2, Search, ListFilter } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useMemo } from 'react';
 import { Input } from '@/components/ui/input';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 export default function Home() {
   const { firestore } = useFirebase();
@@ -107,8 +116,8 @@ export default function Home() {
               <section>
                 <h2 className="text-3xl font-bold text-center mb-10 font-headline">Available Now</h2>
                 
-                <div className="mb-10 space-y-6">
-                  <div className="relative max-w-lg mx-auto">
+                <div className="mb-10 flex justify-center gap-4">
+                  <div className="relative max-w-lg w-full">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                     <Input
                       type="text"
@@ -118,18 +127,27 @@ export default function Home() {
                       onChange={(e) => setSearchTerm(e.target.value)}
                     />
                   </div>
-                  <div className="flex justify-center flex-wrap gap-2">
-                    {categories.map(category => (
-                      <Button
-                        key={category}
-                        variant={selectedCategory === category ? 'default' : 'outline'}
-                        onClick={() => setSelectedCategory(category)}
-                      >
-                        {category}
-                      </Button>
-                    ))}
-                  </div>
+                   <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                       <Button variant="outline" size="icon">
+                          <ListFilter className="h-4 w-4" />
+                          <span className="sr-only">Filter by category</span>
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuLabel>Filter by Category</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuRadioGroup value={selectedCategory} onValueChange={setSelectedCategory}>
+                        {categories.map((category) => (
+                          <DropdownMenuRadioItem key={category} value={category}>
+                            {category}
+                          </DropdownMenuRadioItem>
+                        ))}
+                      </DropdownMenuRadioGroup>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
+
 
                 {filteredProducts && filteredProducts.length > 0 ? (
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">

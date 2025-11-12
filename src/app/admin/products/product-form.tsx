@@ -39,7 +39,7 @@ import { useRouter } from "next/navigation";
 
 const productFormSchema = z.object({
   name: z.string().min(3, "Product name must be at least 3 characters."),
-  category: z.string().min(1, "Please select a category."),
+  category: z.string().min(1, "Please enter a category."),
   garmentType: z.string().min(1, "Please select a garment type."),
   description: z.string().min(10, "Description must be at least 10 characters.").max(500),
   price: z.coerce.number().min(0, "Price cannot be negative."),
@@ -170,28 +170,22 @@ export function ProductForm() {
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <FormField
-            control={form.control}
-            name="category"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Category</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+            <FormField
+              control={form.control}
+              name="category"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Category</FormLabel>
                   <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a category" />
-                    </SelectTrigger>
+                    <Input placeholder="e.g., Tops, Bottoms, Accessories" {...field} />
                   </FormControl>
-                  <SelectContent>
-                    <SelectItem value="Tops">Tops</SelectItem>
-                    <SelectItem value="Bottoms">Bottoms</SelectItem>
-                    <SelectItem value="Outerwear">Outerwear</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                  <FormDescription>
+                    Enter a category for this product.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
           <FormField
             control={form.control}
