@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
@@ -24,7 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon, Sparkles } from "lucide-react";
+import { CalendarIcon, Sparkles, PlusCircle, Trash2 } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
@@ -38,9 +38,10 @@ const productFormSchema = z.object({
   garmentType: z.string().min(1, "Please select a garment type."),
   description: z.string().min(10, "Description must be at least 10 characters.").max(500),
   price: z.coerce.number().min(0, "Price cannot be negative."),
+  images: z.array(z.object({ url: z.string().url("Please enter a valid URL.") })).min(1, "Please add at least one image."),
   launchDate: z.object({
-    from: z.date(),
-    to: z.date(),
+    from: z.date({ required_error: "A start date is required."}),
+    to: z.date({ required_error: "An end date is required."}),
   }),
 });
 
@@ -58,11 +59,17 @@ export function ProductForm() {
       garmentType: "",
       description: "",
       price: 0,
+      images: [{ url: "" }],
       launchDate: {
         from: undefined,
         to: undefined,
       },
     },
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "images",
   });
 
   function onSubmit(data: ProductFormValues) {
@@ -204,6 +211,51 @@ export function ProductForm() {
             </FormItem>
           )}
         />
+
+        <div>
+          <FormLabel>Product Images</FormLabel>
+          <FormDescription className="mb-2">
+            Add one or more URLs for your product images.
+          </FormDescription>
+          <div className="space-y-4">
+            {fields.map((field, index) => (
+              <FormField
+                key={field.id}
+                control={form.control}
+                name={`images.${index}.url`}
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex items-center gap-2">
+                      <FormControl>
+                        <Input placeholder="https://example.com/image.jpg" {...field} />
+                      </FormControl>
+                      {fields.length > 1 && (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => remove(index)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            ))}
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => append({ url: "" })}
+            >
+              <PlusCircle className="mr-2 h-4 w-4" />
+              Add Image URL
+            </Button>
+          </div>
+        </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <FormField
