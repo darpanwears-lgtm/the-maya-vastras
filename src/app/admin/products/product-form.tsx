@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useForm } from "react-hook-form";
@@ -57,6 +58,10 @@ export function ProductForm() {
       garmentType: "",
       description: "",
       price: 0,
+      launchDate: {
+        from: undefined,
+        to: undefined,
+      },
     },
   });
 
@@ -228,7 +233,7 @@ export function ProductForm() {
                         variant={"outline"}
                         className={cn(
                           "w-full justify-start text-left font-normal",
-                          !field.value && "text-muted-foreground"
+                          !field.value?.from && "text-muted-foreground"
                         )}
                       >
                         <CalendarIcon className="mr-2 h-4 w-4" />
@@ -252,7 +257,7 @@ export function ProductForm() {
                       initialFocus
                       mode="range"
                       defaultMonth={field.value?.from}
-                      selected={{from: field.value.from, to: field.value.to}}
+                      selected={{from: field.value?.from, to: field.value?.to}}
                       onSelect={field.onChange}
                       numberOfMonths={2}
                     />
