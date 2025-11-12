@@ -1,4 +1,3 @@
-
 'use client';
 
 import type { Metadata } from 'next';
@@ -7,6 +6,9 @@ import { Space_Grotesk, Cinzel_Decorative } from 'next/font/google';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
 import { FirebaseClientProvider } from '@/firebase';
+import { useState, useEffect } from 'react';
+import WelcomeAnimation from '@/components/welcome-animation';
+
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -24,6 +26,25 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const [showAnimation, setShowAnimation] = useState(true);
+
+  useEffect(() => {
+    // Check if the animation has already been shown in this session
+    const hasBeenShown = sessionStorage.getItem('welcomeAnimationShown');
+    if (hasBeenShown) {
+      setShowAnimation(false);
+      return;
+    }
+
+    // Hide animation after 5 seconds
+    const timer = setTimeout(() => {
+      setShowAnimation(false);
+      // Mark as shown for the current session
+      sessionStorage.setItem('welcomeAnimationShown', 'true');
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const metadata: Metadata = {
     title: 'THE MAYA VASTRA',
@@ -47,6 +68,7 @@ export default function RootLayout({
           cinzelDecorative.variable
         )}
       >
+        <WelcomeAnimation isVisible={showAnimation} />
         <FirebaseClientProvider>
           {children}
           <Toaster />
