@@ -6,11 +6,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { MoreHorizontal, PackagePlus } from "lucide-react";
 import Link from "next/link";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Timestamp } from "firebase/firestore";
 
-function getStatus(startDate: string, endDate: string): { text: string; variant: "default" | "secondary" | "destructive" | "outline" } {
+function getStatus(startDate: Timestamp | Date, endDate: Timestamp | Date): { text: string; variant: "default" | "secondary" | "destructive" | "outline" } {
     const now = new Date();
-    const start = new Date(startDate);
-    const end = new Date(endDate);
+    const start = startDate instanceof Date ? startDate : startDate.toDate();
+    const end = endDate instanceof Date ? endDate : endDate.toDate();
 
     if (now < start) return { text: "Upcoming", variant: "outline" };
     if (now > end) return { text: "Expired", variant: "secondary" };
@@ -47,7 +48,7 @@ export default function AdminProductsPage() {
             </TableHeader>
             <TableBody>
               {products.map((product) => {
-                const status = getStatus(product.launchStartDate, product.launchEndDate);
+                const status = getStatus(product.launchDateStart, product.launchDateEnd);
                 return (
                   <TableRow key={product.id}>
                     <TableCell className="font-medium">{product.name}</TableCell>
