@@ -124,51 +124,58 @@ export default function AdminLayout({
   const { user, isUserLoading } = useUser();
 
   const adminRoleRef = useMemoFirebase(() => {
-    // Only create the reference if we have a definite user ID.
     if (!firestore || !user?.uid) return null;
     return doc(firestore, `roles_admin/${user.uid}`);
   }, [firestore, user?.uid]);
 
-  // isUserLoading is true until the auth state is known.
-  // We should wait for that before trusting the `user` object.
   const { data: adminRole, isLoading: isAdminRoleLoading } = useDoc(adminRoleRef);
   
-  // The overall loading state depends on both user auth and the admin role check.
   const isLoading = isUserLoading || isAdminRoleLoading;
-  
-  // We can only determine admin status if we are not loading and have a user.
-  const isAdmin = !isUserLoading && !!user && !!adminRole;
+  const isAdmin = !isLoading && !!user && !!adminRole;
 
   React.useEffect(() => {
-    // If we're done loading and there's no user, redirect to login.
-    if (!isUserLoading && !user) {
+    // If loading is finished and there's no user, redirect to login.
+    if (!isLoading && !user) {
       router.push('/login');
     }
-  }, [user, isUserLoading, router]);
-
+  }, [user, isLoading, router]);
+  
   return (
     <>
       <MatrixBackground />
       <div className="relative z-10">
         <Header />
-        {isLoading ? (
-          <div className="flex h-[calc(100vh-theme(spacing.14))] w-full items-center justify-center bg-background">
-            <div className="relative z-10 flex items-center gap-2 text-lg">
-                <Loader2 className="h-6 w-6 animate-spin text-primary" />
-                <span>Authenticating & Verifying Access...</span>
-            </div>
-          </div>
-        ) : isAdmin ? (
-          <AdminContent>{children}</AdminContent>
-        ) : (
-            <div className="flex flex-col items-center justify-center h-[calc(100vh-theme(spacing.14))] text-center p-4">
-                <h1 className="text-2xl font-bold mb-4">Access Denied</h1>
-                <p className="text-muted-foreground mb-8 max-w-md">You do not have permission to view this page. Ensure you are logged in with an admin account.</p>
-                <Button asChild>
-                    <Link href="/">Return to Homepage</Link>
-                </Button>
-            </div>
-        )}
+        
+        {(() => {
+          // While authentication or admin role is being checked, show a loading screen.
+          if (isLoading) {
+            return (
+              <div className="flex h-[calc(100vh-theme(spacing.14))] w-full items-center justify-center bg-background">
+                <div className="relative z-10 flex items-center gap-2 text-lg">
+                    <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                    <span>Authenticating & Verifying Access...</span>
+                </div>
+              </div>
+            );
+          }
+          
+          // After loading, if user is not an admin, show Access Denied.
+          if (!isAdmin) {
+             return (
+                <div className="flex flex-col items-center justify-center h-[calc(100vh-theme(spacing.14))] text-center p-4">
+                    <h1 className="text-2xl font-bold mb-4">Access Denied</h1>
+                    <p className="text-muted-foreground mb-8 max-w-md">You do not have permission to view this page. Ensure you are logged in with an admin account.</p>
+                    <Button asChild>
+                        <Link href="/">Return to Homepage</Link>
+                    </Button>
+                </div>
+            );
+          }
+          
+          // Only if the user is a confirmed admin, render the full admin layout with children.
+          return <AdminContent>{children}</AdminContent>;
+        })()}
+        
       </div>
     </>
   );
