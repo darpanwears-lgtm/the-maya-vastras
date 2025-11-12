@@ -1,7 +1,13 @@
+'use client';
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Logo from "@/components/logo";
 import Header from "@/components/header";
+import { useAuth, useUser } from "@/firebase";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const GoogleIcon = () => (
   <svg className="mr-2 h-4 w-4" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
@@ -11,6 +17,26 @@ const GoogleIcon = () => (
 
 
 export default function LoginPage() {
+  const auth = useAuth();
+  const router = useRouter();
+  const { user, isUserLoading } = useUser();
+
+  useEffect(() => {
+    if (!isUserLoading && user) {
+      router.push('/admin/dashboard');
+    }
+  }, [user, isUserLoading, router]);
+
+  const handleGoogleSignIn = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      await signInWithPopup(auth, provider);
+      router.push('/admin/dashboard');
+    } catch (error) {
+      console.error("Error signing in with Google: ", error);
+    }
+  };
+
   return (
     <>
       <div className="relative z-10 flex min-h-screen flex-col">
@@ -25,7 +51,7 @@ export default function LoginPage() {
               </CardHeader>
               <CardContent>
                 <div className="flex flex-col space-y-4">
-                  <Button className="w-full bg-white text-black hover:bg-gray-200">
+                  <Button className="w-full bg-white text-black hover:bg-gray-200" onClick={handleGoogleSignIn}>
                       <GoogleIcon/>
                       Sign in with Google
                   </Button>

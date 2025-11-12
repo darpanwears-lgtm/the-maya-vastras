@@ -8,9 +8,9 @@ import {
   Package,
   ShoppingCart,
   Settings,
-  PanelLeft,
   PackagePlus,
   ArrowLeft,
+  Loader2,
 } from 'lucide-react';
 import {
   SidebarProvider,
@@ -28,8 +28,9 @@ import {
 import Logo from '@/components/logo';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/header';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import MatrixBackground from '@/components/matrix-background';
+import { useUser } from '@/firebase';
 
 export default function AdminLayout({
   children,
@@ -38,21 +39,28 @@ export default function AdminLayout({
 }) {
   const pathname = usePathname();
   const isLoginPage = pathname.startsWith('/login');
+  const { user, isUserLoading } = useUser();
+  const router = useRouter();
 
-  // Mock admin check. In a real app, this would involve checking user roles from a session.
-  const isAdmin = true;
 
-  if (!isAdmin) {
-    return (
-        <div className="flex flex-col items-center justify-center h-screen">
-            <h1 className="text-2xl font-bold mb-4">Access Denied</h1>
-            <p className="text-muted-foreground mb-8">You do not have permission to view this page.</p>
-            <Button asChild>
-                <Link href="/">Return to Homepage</Link>
-            </Button>
+  React.useEffect(() => {
+    if (!isUserLoading && !user) {
+      router.push('/login');
+    }
+  }, [user, isUserLoading, router]);
+  
+  if (isUserLoading || !user) {
+     return (
+      <div className="flex h-screen w-full items-center justify-center bg-background">
+        <MatrixBackground />
+        <div className="relative z-10 flex items-center gap-2 text-lg">
+            <Loader2 className="h-6 w-6 animate-spin text-primary" />
+            <span>Authenticating...</span>
         </div>
+      </div>
     );
   }
+
 
   return (
     <>
