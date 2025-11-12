@@ -12,7 +12,7 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: 'VedicVerse',
+  title: 'THE MAYA VASTRA',
   description: 'A clothing brand with a Vedic, Indian, Maya, black and neon green, Matrix design theme.',
 };
 

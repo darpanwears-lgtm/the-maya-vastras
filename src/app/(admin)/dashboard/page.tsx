@@ -9,7 +9,7 @@ export default function AdminDashboard() {
       <h1 className="text-3xl font-bold mb-6 font-headline">Dashboard</h1>
       <Card>
         <CardHeader>
-          <CardTitle>Welcome to the VedicVerse Admin Panel</CardTitle>
+          <CardTitle>Welcome to the THE MAYA VASTRA Admin Panel</CardTitle>
           <CardDescription>
             This is your control center. Manage products, view orders, and configure your store's launch settings.
           </CardDescription>
