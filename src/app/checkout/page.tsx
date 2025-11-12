@@ -3,10 +3,12 @@ import { Suspense } from 'react';
 import Header from '@/components/header';
 import { Loader2 } from 'lucide-react';
 import CheckoutForm from './checkout-form';
+import MatrixBackground from '@/components/matrix-background';
 
 export default function CheckoutPage() {
   return (
     <>
+      <MatrixBackground />
       <div className="relative z-10 flex min-h-screen flex-col">
         <Header />
         <main className="flex-1">

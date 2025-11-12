@@ -22,6 +22,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import MatrixBackground from '@/components/matrix-background';
 
 export default function Home() {
   const { firestore } = useFirebase();
@@ -78,6 +79,8 @@ export default function Home() {
   }
 
   return (
+    <>
+      <MatrixBackground />
       <div className="relative z-10 flex min-h-screen flex-col">
         <Header />
         <main className="flex-1">
@@ -171,5 +174,6 @@ export default function Home() {
           </div>
         </main>
       </div>
+    </>
   );
 }

@@ -14,6 +14,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import UnlockingAnimation from '@/components/unlocking-animation';
 import { Badge } from '@/components/ui/badge';
 import { upcomingLaunch as staticLaunchData } from '@/lib/data';
+import MatrixBackground from '@/components/matrix-background';
 
 export default function UpcomingPage() {
   const { firestore } = useFirebase();
@@ -137,24 +138,27 @@ export default function UpcomingPage() {
   }
 
   return (
-    <div className="relative z-10 flex min-h-screen flex-col">
-      <Header />
-      <main className="flex-1">
-        <div className="container mx-auto px-4 py-8">
-          <section className="text-center my-12">
-            <Badge variant="outline" className="mb-4 border-primary text-primary text-sm py-1 px-4 bg-background/50">
-              {isLoadingHero ? <Loader2 className="h-4 w-4 animate-spin" /> : dropName}
-            </Badge>
-            <h1 className="text-5xl md:text-7xl font-bold font-headline tracking-tighter mb-4 text-white">
-              Prepaid Access
-            </h1>
-            <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-              This section is for prepaid orders of the upcoming drop. Enter the access code to view the collection.
-            </p>
-          </section>
-          {renderContent()}
-        </div>
-      </main>
-    </div>
+    <>
+      <MatrixBackground />
+      <div className="relative z-10 flex min-h-screen flex-col">
+        <Header />
+        <main className="flex-1">
+          <div className="container mx-auto px-4 py-8">
+            <section className="text-center my-12">
+              <Badge variant="outline" className="mb-4 border-primary text-primary text-sm py-1 px-4 bg-background/50">
+                {isLoadingHero ? <Loader2 className="h-4 w-4 animate-spin" /> : dropName}
+              </Badge>
+              <h1 className="text-5xl md:text-7xl font-bold font-headline tracking-tighter mb-4 text-white">
+                Prepaid Access
+              </h1>
+              <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
+                This section is for prepaid orders of the upcoming drop. Enter the access code to view the collection.
+              </p>
+            </section>
+            {renderContent()}
+          </div>
+        </main>
+      </div>
+    </>
   );
 }
