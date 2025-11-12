@@ -36,7 +36,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
         <div className="flex flex-col gap-6">
           <div>
             <Badge variant="outline" className="mb-2 border-primary text-primary">{product.garmentType}</Badge>
-            <h1 className="text-4xl lg:text-5xl font-bold font-headline tracking-tighter">{product.name}</h1>
+            <h1 className="text-4xl lg:text-5xl font-bold">{product.name}</h1>
           </div>
           
           <p className="text-3xl font-bold text-primary">${product.price.toFixed(2)}</p>
