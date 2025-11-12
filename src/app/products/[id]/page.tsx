@@ -32,10 +32,6 @@ async function getProduct(id: string): Promise<Product | null> {
 
         const productData = productSnap.data();
         
-        // Serialize Timestamps to strings before returning
-        const launchDateStart = (productData.launchDateStart as Timestamp).toDate().toISOString();
-        const launchDateEnd = (productData.launchDateEnd as Timestamp).toDate().toISOString();
-
         return {
             id: productSnap.id,
             name: productData.name,
@@ -46,8 +42,6 @@ async function getProduct(id: string): Promise<Product | null> {
             colors: productData.colors,
             category: productData.category,
             garmentType: productData.garmentType,
-            launchDateStart,
-            launchDateEnd,
         };
     } catch (error) {
         console.error("Failed to fetch product:", error);

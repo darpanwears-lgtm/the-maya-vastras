@@ -61,12 +61,12 @@ export default function Home() {
                <section className="text-center my-20 p-8">
                  <div className="flex items-center justify-center">
                     <Loader2 className="mr-2 h-8 w-8 animate-spin" />
-                    <span>Loading Live Drop...</span>
+                    <span>Loading Products...</span>
                  </div>
                </section>
             ) : availableProducts && availableProducts.length > 0 ? (
               <section>
-                <h2 className="text-3xl font-bold text-center mb-10 font-headline">Live Now</h2>
+                <h2 className="text-3xl font-bold text-center mb-10 font-headline">Available Now</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                   {availableProducts.map(product => (
                     <ProductCard key={product.id} product={product} />
@@ -77,7 +77,6 @@ export default function Home() {
               <section className="text-center my-20 p-8 border border-dashed border-border rounded-lg">
                 <h2 className="text-2xl font-bold font-headline mb-2">The Portal is Closed</h2>
                 <p className="text-muted-foreground">There are no products available at this time. A new transmission is imminent.</p>
-                <p className="text-primary font-bold mt-4">{`Next drop: ${upcomingLaunch.date}`}</p>
               </section>
             )}
           </div>

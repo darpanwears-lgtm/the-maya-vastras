@@ -10,15 +10,6 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { useUser } from '@/firebase';
 
-function getStatus(startDate: string, endDate: string): { text: string; variant: "default" | "secondary" | "destructive" | "outline" } {
-    const now = new Date();
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-
-    if (now < start) return { text: "Upcoming", variant: "outline" };
-    if (now > end) return { text: "Expired", variant: "secondary" };
-    return { text: "Live", variant: "default" };
-}
 
 export default function ProductDetails({ product }: { product: Product }) {
   const [selectedColor, setSelectedColor] = useState(product.colors?.[0] || '');
@@ -27,9 +18,6 @@ export default function ProductDetails({ product }: { product: Product }) {
 
   const imageUrl = product.images?.[0]?.url || 'https://placehold.co/800x1067';
   const checkoutUrl = `/checkout?productId=${product.id}&color=${selectedColor}&size=${selectedSize}`;
-
-  const status = getStatus(product.launchDateStart, product.launchDateEnd);
-  const isAvailable = status.text === 'Live';
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -45,9 +33,6 @@ export default function ProductDetails({ product }: { product: Product }) {
                 data-ai-hint="fashion product"
               />
           </div>
-           <Badge variant={status.variant} className="absolute top-4 right-4 text-lg py-2 px-4">
-              {status.text}
-            </Badge>
         </div>
         
         <div className="flex flex-col gap-6">
@@ -109,16 +94,12 @@ export default function ProductDetails({ product }: { product: Product }) {
           </div>
 
           <div className="flex flex-col gap-4">
-            {user && isAvailable ? (
+            {user ? (
               <Button size="lg" asChild className="w-full md:w-auto bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-[0_0_25px_5px_hsl(var(--primary)/0.4)] transition-shadow duration-300">
                 <Link href={checkoutUrl}>
                   <CreditCard className="mr-2 h-5 w-5" />
                   Buy Now
                 </Link>
-              </Button>
-            ) : user ? (
-              <Button size="lg" disabled className="w-full md:w-auto">
-                Not Currently Available
               </Button>
             ) : (
               <Button size="lg" asChild className="w-full md:w-auto">

@@ -15,7 +15,7 @@ export default function AdminProductsPage() {
 
   const productsQuery = useMemoFirebase(() => {
     if (!firestore) return null;
-    return query(collection(firestore, 'products'), orderBy('name', 'desc'));
+    return query(collection(firestore, 'products'), orderBy('name', 'asc'));
   }, [firestore]);
   
   const { data: products, isLoading } = useCollection<Product>(productsQuery);

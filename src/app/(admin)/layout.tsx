@@ -39,7 +39,6 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const isLoginPage = pathname.startsWith('/login');
   const { user, isUserLoading } = useUser();
   const router = useRouter();
   const { firestore } = useFirebase();
@@ -84,12 +83,12 @@ export default function AdminLayout({
     );
   }
 
-
+  // Only render children if user is a confirmed admin
   return (
     <>
       <MatrixBackground />
       <div className="relative z-10">
-        {!isLoginPage && <Header />}
+        <Header />
         <SidebarProvider>
           <div className="flex min-h-screen">
             <Sidebar>
