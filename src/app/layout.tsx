@@ -6,9 +6,8 @@ import './globals.css';
 import { Space_Grotesk, Cinzel_Decorative } from 'next/font/google';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
-import MatrixBackground from '@/components/matrix-background';
-import { usePathname } from 'next/navigation';
 import { FirebaseClientProvider } from '@/firebase';
+import GridBackground from '@/components/grid-background';
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -26,9 +25,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const pathname = usePathname();
-  const isProductPage = pathname.startsWith('/products/');
-  const isAdminPage = pathname.startsWith('/admin');
 
   const metadata: Metadata = {
     title: 'THE MAYA VASTRA',
@@ -53,7 +49,7 @@ export default function RootLayout({
         )}
       >
         <FirebaseClientProvider>
-          {!isProductPage && !isAdminPage && <MatrixBackground />}
+          <GridBackground />
           {children}
           <Toaster />
         </FirebaseClientProvider>

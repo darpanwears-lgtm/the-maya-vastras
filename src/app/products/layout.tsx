@@ -1,9 +1,10 @@
+
 import type { Metadata } from 'next';
 import { Space_Grotesk, Cinzel_Decorative } from 'next/font/google';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
 import Header from '@/components/header';
-import Image from 'next/image';
+import GridBackground from '@/components/grid-background';
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -34,13 +35,7 @@ export default function ProductLayout({
           cinzelDecorative.variable
         )}
       >
-        <Image 
-            src="https://d3vzcd81g3m050.cloudfront.net/wp-content/uploads/2022/04/spiritualism-g324b71d99_1280-1024x739.jpg"
-            alt="Peaceful Vedic background"
-            fill
-            className="object-cover w-full h-full z-0 opacity-20"
-            data-ai-hint="vedic pattern"
-        />
+        <GridBackground />
         <div className="relative z-10 flex min-h-screen flex-col">
           <Header />
           <main className="flex-1">{children}</main>
