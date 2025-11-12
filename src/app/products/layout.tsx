@@ -4,7 +4,7 @@ import { Space_Grotesk, Cinzel_Decorative } from 'next/font/google';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
 import Header from '@/components/header';
-import GridBackground from '@/components/grid-background';
+import MatrixBackground from '@/components/matrix-background';
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -35,7 +35,7 @@ export default function ProductLayout({
           cinzelDecorative.variable
         )}
       >
-        <GridBackground />
+        <MatrixBackground />
         <div className="relative z-10 flex min-h-screen flex-col">
           <Header />
           <main className="flex-1">{children}</main>

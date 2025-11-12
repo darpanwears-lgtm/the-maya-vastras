@@ -14,7 +14,6 @@ import { Loader2 } from 'lucide-react';
 
 export default function Home() {
   const { firestore } = useFirebase();
-  const heroImage = "https://images.unsplash.com/photo-1698422634311-54a43463375b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxhYnN0cmFjdCUyMHZlZGljfGVufDB8fHx8MTc2NDUzOTY2NXww&ixlib=rb-4.1.0&q=80&w=1080";
 
   const productsQuery = useMemoFirebase(() => {
     if (!firestore) return null;
@@ -31,16 +30,6 @@ export default function Home() {
         <main className="flex-1">
           <div className="container mx-auto px-4 py-8">
             <section className="relative text-center my-16 py-20 rounded-lg overflow-hidden">
-              {heroImage && (
-                <Image 
-                  src={heroImage}
-                  alt="Abstract vedic and mayan inspired art for hero background"
-                  fill
-                  className="object-cover w-full h-full z-0"
-                  data-ai-hint="abstract vedic"
-                />
-              )}
-              <div className="absolute inset-0 bg-black/60 z-10"/>
               <div className="relative z-20">
                 <Badge variant="outline" className="mb-4 border-primary text-primary text-sm py-1 px-4 bg-background/50">
                   {upcomingLaunch.date}

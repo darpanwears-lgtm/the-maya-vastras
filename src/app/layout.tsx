@@ -7,7 +7,6 @@ import { Space_Grotesk, Cinzel_Decorative } from 'next/font/google';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
 import { FirebaseClientProvider } from '@/firebase';
-import GridBackground from '@/components/grid-background';
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -49,7 +48,6 @@ export default function RootLayout({
         )}
       >
         <FirebaseClientProvider>
-          <GridBackground />
           {children}
           <Toaster />
         </FirebaseClientProvider>
